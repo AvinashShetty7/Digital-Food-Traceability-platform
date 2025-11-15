@@ -3,13 +3,17 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import nodemailer from "nodemailer";
 import dotenv from "dotenv";
+import Otpmodel from "../models/Otp.model.js";
 
 dotenv.config();
 
 // REGISTER CONTROLLER
 const registerUser = async (req, res) => {
+  
   try {
     const { name, email, phone, password, role } = req.body;
+    console.log(req.body);
+    
 
     if (!name || !email || !password || !role) {
       return res
@@ -24,23 +28,15 @@ const registerUser = async (req, res) => {
         .json({ message: "User already exists with this email" });
     }
 
-    const hashedPassword = await bcrypt.hash(password, 10);
 
-    const newUser = await User.create({
-      name,
+    const tempUser = await Otpmodel.create({
       email,
-      phone,
-      password: hashedPassword,
-      role,
-      verified: false,
-      emailVerified: false,
-      phoneVerified: false,
     });
 
     const otp = Math.floor(100000 + Math.random() * 900000);
-    newUser.otp = otp;
-    newUser.otpExpiry = Date.now() + 5 * 60 * 1000; // expires in 5 minutes
-    await newUser.save();
+    tempUser.otp = otp;
+    tempUser.otpExpiry = Date.now() + 1 * 60 * 1000; // expires in 5 minutes
+    await tempUser.save();
 
     const transporter = nodemailer.createTransport({
       host: "smtp-relay.brevo.com",
@@ -67,9 +63,9 @@ const registerUser = async (req, res) => {
       message:
         "✅ User registered successfully! OTP sent to your email for verification.",
       user: {
-        name: newUser.name,
-        email: newUser.email,
-        role: newUser.role,
+        name: tempUser.name,
+        email: tempUser.email,
+        role: tempUser.role,
       },
     });
   } catch (error) {
@@ -84,40 +80,52 @@ const registerUser = async (req, res) => {
 // verify-otp CONTROLLER
 const verifyOtp = async (req, res) => {
   try {
-    const { email, otp } = req.body;
+
+    const {  otp, email,formData} = req.body;
+    
 
     if (!email || !otp) {
       return res.status(400).json({ message: "Email and OTP are required" });
     }
 
-    const user = await User.findOne({ email });
-    if (!user) {
+    const tempuser = await Otpmodel.findOne({ email });
+    if (!tempuser) {
       return res.status(404).json({ message: "User not found" });
     }
 
-    if (!user.otp || !user.otpExpiry) {
+    if (!tempuser.otp || !tempuser.otpExpiry) {
       return res.status(400).json({ message: "OTP not requested or expired" });
     }
 
-    if (Date.now() > user.otpExpiry) {
-      user.otp = undefined;
-      user.otpExpiry = undefined;
-      await user.save();
+    if (Date.now() > tempuser.otpExpiry) {
+      tempuser.otp = undefined;
+      tempuser.otpExpiry = undefined;
+      await tempuser.save();
       return res
         .status(400)
         .json({ message: "OTP expired. Please resend a new one." });
     }
 
-    if (user.otp !== otp) {
+    if (tempuser.otp !== otp) {
       return res
         .status(400)
         .json({ message: "Invalid OTP. Please try again." });
     }
+    const hashedPassword = await bcrypt.hash(formData.password, 10);
+       
+    const user = await User.create({
+      name:formData.name,
+      email,
+      phone:formData.phone,
+      password:hashedPassword,
+      role:formData.role,
+
+    });
 
     user.emailVerified = true;
-    user.otp = undefined;
-    user.otpExpiry = undefined;
     await user.save();
+    await Otpmodel.deleteOne({ email });
+
 
     res.status(200).json({
       message: "✅ Email verified successfully! You can now log in.",
@@ -191,13 +199,13 @@ const resendOTP = async (req, res) => {
       return res.status(400).json({ message: "Email is required" });
     }
 
-    const user = await User.findOne({ email });
-    if (!user) {
+    const tempuser = await Otpmodel.findOne({ email });
+    if (!tempuser) {
       return res.status(404).json({ message: "User not found" });
     }
 
-    if (user.otpExpiry && Date.now() < user.otpExpiry) {
-      const remaining = Math.ceil((user.otpExpiry - Date.now()) / 1000);
+    if (tempuser.otpExpiry && Date.now() < tempuser.otpExpiry) {
+      const remaining = Math.ceil((tempuser.otpExpiry - Date.now()) / 1000);
       return res.status(400).json({
         message: `OTP already sent. Please wait ${remaining} seconds before requesting a new one.`,
       });
@@ -205,9 +213,9 @@ const resendOTP = async (req, res) => {
 
     const otp = Math.floor(100000 + Math.random() * 900000);
 
-    user.otp = otp;
-    user.otpExpiry = Date.now() + 5 * 60 * 1000; // valid for 5 min
-    await user.save();
+    tempuser.otp = otp;
+    tempuser.otpExpiry = Date.now() + 5 * 60 * 1000; // valid for 5 min
+    await tempuser.save();
 
     const transporter = nodemailer.createTransport({
       host: "smtp-relay.brevo.com",
@@ -245,13 +253,12 @@ const resendOTP = async (req, res) => {
 
 const getPendingUsers = async (req, res) => {
   try {
-
-    if (req.user?.role !== "admin") {
-      return res.status(403).json({ message: "Access denied. Admins only." });
-    }
+    // if (req.user?.role !== "admin") {
+    //   return res.status(403).json({ message: "Access denied. Admins only." });
+    // }
 
     const pendingUsers = await User.find({ verified: false })
-      .select("-password -otp -otpExpiry") // exclude sensitive fields
+      .select("-password ") // exclude sensitive fields
       .sort({ createdAt: -1 }); // newest first
 
     if (!pendingUsers.length) {
@@ -277,8 +284,7 @@ const getPendingUsers = async (req, res) => {
   }
 };
 
-
-export const verifyUserByAdmin = async (req, res) => {
+const verifyUserByAdmin = async (req, res) => {
   try {
     const { id } = req.params;
     const { verified } = req.body; // true = approve, false = reject
@@ -289,9 +295,9 @@ export const verifyUserByAdmin = async (req, res) => {
     }
 
     // 2️⃣ Ensure only admin can perform this
-    if (req.user?.role !== "admin") {
-      return res.status(403).json({ message: "Access denied. Admins only." });
-    }
+    // if (req.user?.role !== "admin") {
+    //   return res.status(403).json({ message: "Access denied. Admins only." });
+    // }
 
     // 3️⃣ Find the user
     const user = await User.findById(id);
@@ -331,14 +337,12 @@ export const verifyUserByAdmin = async (req, res) => {
   }
 };
 
-import User from "../models/User.model.js";
-
 /**
  * ✅ Get All Users (Admin)
  * Route: GET /api/user/all
  * Access: Admin only
  */
-export const getAllUsers = async (req, res) => {
+const getAllUsers = async (req, res) => {
   try {
     // 1️⃣ Optional: restrict to admin
     if (req.user?.role !== "admin") {
@@ -374,7 +378,6 @@ export const getAllUsers = async (req, res) => {
     });
   }
 };
-
 
 const deleteUser = async (req, res) => {
   try {
@@ -430,8 +433,6 @@ const deleteUser = async (req, res) => {
   }
 };
 
-
-
 const logoutUser = async (req, res) => {
   try {
     // 1️⃣ Clear the authentication cookie (tokenid)
@@ -456,23 +457,28 @@ const logoutUser = async (req, res) => {
   }
 };
 
-
 const validLogin = async (req, res) => {
   try {
     // 1️⃣ Read token from cookie
     const token = req.cookies?.tokenid;
     if (!token) {
-      return res.status(401).json({ success: false, message: "No token found. Please log in." });
+      return res
+        .status(401)
+        .json({ success: false, message: "No token found. Please log in." });
     }
 
     // 2️⃣ Verify token
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
     // 3️⃣ Fetch user from DB
-    const user = await User.findById(decoded.userId).select("-password -otp -otpExpiry");
+    const user = await User.findById(decoded.userId).select(
+      "-password -otp -otpExpiry"
+    );
 
     if (!user) {
-      return res.status(404).json({ success: false, message: "User not found." });
+      return res
+        .status(404)
+        .json({ success: false, message: "User not found." });
     }
 
     // 4️⃣ Check if admin verified account
@@ -498,18 +504,15 @@ const validLogin = async (req, res) => {
   }
 };
 
-
-
-
-export { 
+export {
   registerUser,
-   loginUser,
-    verifyOtp,
-    resendOTP,
-    getPendingUsers ,
-    verifyUserByAdmin, 
-    getAllUsers,
-    deleteUser,
-    logoutUser,
-    validLogin
-  };
+  loginUser,
+  verifyOtp,
+  resendOTP,
+  getPendingUsers,
+  verifyUserByAdmin,
+  getAllUsers,
+  deleteUser,
+  logoutUser,
+  validLogin,
+};

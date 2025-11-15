@@ -33,8 +33,8 @@ const userSchema = new mongoose.Schema({
   // phoneVerified: { type: Boolean, default: false },
 
   // OTP fields (for OTP-based login)
-  otp: { type: String },
-  otpExpiry: { type: Date },
+  // otp: { type: String },
+  // otpExpiry: { type: Date },
 
   documents: [documentSchema],
 

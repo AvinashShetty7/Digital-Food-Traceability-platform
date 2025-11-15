@@ -5,8 +5,8 @@ import cloudinary from "../db/cloudinary.js";
 const storage = new CloudinaryStorage({
   cloudinary,
   params: {
-    folder: "mern_uploads", // Folder name in Cloudinary
-    allowed_formats: ["jpg", "jpeg", "png"],
+    folder: "farmer_documents",
+    allowed_formats: ["jpg", "jpeg", "png", "pdf"],
   },
 });
 

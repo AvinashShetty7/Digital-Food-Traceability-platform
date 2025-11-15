@@ -1,0 +1,11 @@
+{
+"otp":"987168",
+"email":"avinashashetty2004@gmail.com",
+"formdata":{
+  "name": "Avinash",
+  "email":"avinashashetty2004@gmail.com",
+  "phone": "7975287481",
+  "password": "1234",
+  "role":"farmer"
+}
+}

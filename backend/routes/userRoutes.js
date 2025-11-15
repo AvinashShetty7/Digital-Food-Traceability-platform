@@ -27,7 +27,7 @@ router.post("/logout",logoutUser);
 
 // // Admin-only
 router.get("/pending-users",getPendingUsers);
-router.put("/verify/:id",verifyUserByAdmin);
+router.put("/verify-user/:id",verifyUserByAdmin);
 router.get("/all",getAllUsers);
 router.delete("/delete/:id",deleteUser);
 
