@@ -139,57 +139,6 @@ const verifyOtp = async (req, res) => {
   }
 };
 
-//login controller
-const loginUser = async (req, res) => {
-  try {
-    const { email, password } = req.body;
-
-    if (!email || !password) {
-      return res
-        .status(400)
-        .json({ message: "Email and password are required" });
-    }
-
-    const user = await User.findOne({ email });
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
-
-    const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) {
-      return res.status(401).json({ message: "Invalid password" });
-    }
-
-    const token = jwt.sign(
-      { userId: user._id, role: user.role },
-      process.env.JWT_SECRET,
-      { expiresIn: "1d" } // 1 day expiry
-    );
-
-    res.cookie("tokenid", token, {
-      httpOnly: true,
-      secure: false, // true in production
-      sameSite: "Lax",
-      maxAge: 24 * 60 * 60 * 1000, // 1 day
-    });
-
-    res.status(200).json({
-      message: "✅ Login successful",
-      user: {
-        name: user.name,
-        email: user.email,
-        role: user.role,
-        verified: user.verified,
-      },
-    });
-  } catch (error) {
-    console.error("❌ Error logging in:", error);
-    res
-      .status(500)
-      .json({ message: "Server error during login", error: error.message });
-  }
-};
-
 //  RESEND OTP CONTROLLER
 const resendOTP = async (req, res) => {
   try {
@@ -246,6 +195,82 @@ const resendOTP = async (req, res) => {
     res.status(500).json({
       success: false,
       message: "Server error during OTP resend",
+      error: error.message,
+    });
+  }
+};
+
+//login controller
+const loginUser = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    if (!email || !password) {
+      return res
+        .status(400)
+        .json({ message: "Email and password are required" });
+    }
+
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+      return res.status(401).json({ message: "Invalid password" });
+    }
+
+    const token = jwt.sign(
+      { userId: user._id, role: user.role },
+      process.env.JWT_SECRET,
+      { expiresIn: "1d" } // 1 day expiry
+    );
+
+    res.cookie("tokenid", token, {
+      httpOnly: true,
+      secure: false, // true in production
+      sameSite: "Lax",
+      maxAge: 24 * 60 * 60 * 1000, // 1 day
+    });
+
+    res.status(200).json({
+      message: "✅ Login successful",
+      user: {
+        name: user.name,
+        email: user.email,
+        role: user.role,
+        verified: user.verified,
+      },
+    });
+  } catch (error) {
+    console.error("❌ Error logging in:", error);
+    res
+      .status(500)
+      .json({ message: "Server error during login", error: error.message });
+  }
+};
+
+
+const logoutUser = async (req, res) => {
+  try {
+    // 1️⃣ Clear the authentication cookie (tokenid)
+    res.clearCookie("tokenid", {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+    });
+
+    // 2️⃣ Respond success
+    res.status(200).json({
+      success: true,
+      message: "✅ Logged out successfully.",
+    });
+  } catch (error) {
+    console.error("❌ Error during logout:", error);
+    res.status(500).json({
+      success: false,
+      message: "Server error during logout.",
       error: error.message,
     });
   }
@@ -337,11 +362,7 @@ const verifyUserByAdmin = async (req, res) => {
   }
 };
 
-/**
- * ✅ Get All Users (Admin)
- * Route: GET /api/user/all
- * Access: Admin only
- */
+
 const getAllUsers = async (req, res) => {
   try {
     // 1️⃣ Optional: restrict to admin
@@ -433,29 +454,6 @@ const deleteUser = async (req, res) => {
   }
 };
 
-const logoutUser = async (req, res) => {
-  try {
-    // 1️⃣ Clear the authentication cookie (tokenid)
-    res.clearCookie("tokenid", {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
-    });
-
-    // 2️⃣ Respond success
-    res.status(200).json({
-      success: true,
-      message: "✅ Logged out successfully.",
-    });
-  } catch (error) {
-    console.error("❌ Error during logout:", error);
-    res.status(500).json({
-      success: false,
-      message: "Server error during logout.",
-      error: error.message,
-    });
-  }
-};
 
 const validLogin = async (req, res) => {
   try {

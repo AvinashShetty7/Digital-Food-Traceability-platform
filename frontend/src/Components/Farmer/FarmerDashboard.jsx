@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Menu, X, User } from "lucide-react";
+import { Link } from "react-router-dom";
 
 export default function FarmerDashboard() {
   const [open, setOpen] = useState(false);
@@ -12,11 +13,11 @@ export default function FarmerDashboard() {
       >
         <h2 className="text-xl font-bold mb-6">Farmer Menu</h2>
         <nav className="space-y-4">
-          <button className="w-full text-left p-2 rounded-lg hover:bg-gray-200 font-medium">Add Raw Material</button>
-          <button className="w-full text-left p-2 rounded-lg hover:bg-gray-200 font-medium">View My Raw Material</button>
-          <button className="w-full text-left p-2 rounded-lg hover:bg-gray-200 font-medium">View Current Market Price</button>
-          <button className="w-full text-left p-2 rounded-lg hover:bg-gray-200 font-medium">Uploaded Documents</button>
-          <button className="w-full text-left p-2 rounded-lg hover:bg-gray-200 font-medium">Update Profile</button>
+          <Link to="/addrawmaterial" className="block w-full text-left p-2 rounded-lg hover:bg-gray-200 font-medium">Add Raw Material</Link>
+          <Link to="/Farmerrawmateriallist" className="block w-full text-left p-2 rounded-lg hover:bg-gray-200 font-medium">View My Raw Material</Link>
+          <Link to="/MarketpricePage" className="block w-full text-left p-2 rounded-lg hover:bg-gray-200 font-medium">View Current Market Price</Link>
+          <Link  to="#" className="block w-full text-left p-2 rounded-lg hover:bg-gray-200 font-medium">Uploaded Documents</Link>
+          <Link to="#" className="block w-full text-left p-2 rounded-lg hover:bg-gray-200 font-medium">Update Profile</Link>
         </nav>
       </div>
 

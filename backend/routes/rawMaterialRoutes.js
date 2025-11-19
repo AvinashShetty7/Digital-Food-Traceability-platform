@@ -1,27 +1,30 @@
 import express from "express";
 import upload from "../middleware/upload.js";
 import {
-  addRawMaterial,
+  // addRawMaterial,
   getRawMaterialsByFarmer,
   getAllRawMaterials,
   getSingleRawMaterial,
-  updateRawMaterial,
+  updateStatus,
   deleteRawMaterial,
   markAsConsumed,
+  getmanufacturerbuyedraws,
 } from "../controllers/rawMaterialController.js";
 
 // import { authMiddleware, roleCheck } from "../middlewares/authMiddleware.js";
 const router = express.Router();
 
-router.post("/create", addRawMaterial);  //
+// router.post("/create", addRawMaterial);  
 router.get("/myraws", getRawMaterialsByFarmer);
 
 // // Manufacturer/Admin view
-router.get("/all",getAllRawMaterials);
-router.get("/:id",getSingleRawMaterial);
+router.get("/allraws",getAllRawMaterials);
+router.get("/:batchCode",getSingleRawMaterial);
+router.get("/mybuyedraws/:manufacturerid",getmanufacturerbuyedraws);
+
 
 // // Update/Delete
-router.put("/update/:id", updateRawMaterial);
+router.put("/update/:batchCode", updateStatus);
 router.delete("/delete/:id",deleteRawMaterial);
 
 // // Mark as consumed (by manufacturer)

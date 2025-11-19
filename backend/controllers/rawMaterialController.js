@@ -1,71 +1,72 @@
 import RawMaterial from "../models/RawMaterial.model.js";
 import User from "../models/User.model.js";
 
-const addRawMaterial = async (req, res) => {
-  try {
-    const {
-      name,
-      quantity,
-      unit,
-      location,
-      harvestDate,
-      expiryDate,
-      pricePerUnit,
-      qualityGrade,
-    } = req.body;
+// const addRawMaterial = async (req, res) => {
 
-    if (!name || !quantity || !unit || !pricePerUnit) {
-      return res.status(400).json({
-        message:
-          "All required fields (name, quantity, unit, price, image) must be provided.",
-      });
-    }
+//   try {
+//     const {
+//       name,
+//       quantity,
+//       unit,
+//       location,
+//       harvestDate,
+//       expiryDate,
+//       pricePerUnit,
+//       qualityGrade,
+//     } = req.body;
 
-    const farmerId = req.user?._id;
-    const farmer = await User.findById(farmerId);
+//     if (!name || !quantity || !unit || !pricePerUnit) {
+//       return res.status(400).json({
+//         message:
+//           "All required fields (name, quantity, unit, price, image) must be provided.",
+//       });
+//     }
 
-    if (!farmer) {
-      return res.status(404).json({ message: "Farmer not found." });
-    }
+//     const farmerId = req.user?._id;
+//     const farmer = await User.findById(farmerId);
 
-    if (farmer.role !== "farmer") {
-      return res
-        .status(403)
-        .json({ message: "Only farmers can add raw materials." });
-    }
+//     if (!farmer) {
+//       return res.status(404).json({ message: "Farmer not found." });
+//     }
 
-    const newMaterial = new RawMaterial({
-      name,
-      quantity,
-      unit,
-      location,
-      harvestDate,
-      expiryDate,
-      pricePerUnit,
-      qualityGrade: qualityGrade || "A",
-      //   farmer: farmerId,
-    });
+//     if (farmer.role !== "farmer") {
+//       return res
+//         .status(403)
+//         .json({ message: "Only farmers can add raw materials." });
+//     }
 
-    await newMaterial.save();
+//     const newMaterial = new RawMaterial({
+//       name,
+//       quantity,
+//       unit,
+//       location,
+//       harvestDate,
+//       expiryDate,
+//       pricePerUnit,
+//       qualityGrade: qualityGrade || "A",
+//       //   farmer: farmerId,
+//     });
 
-    res.status(201).json({
-      success: true,
-      message: "✅ Raw material added successfully!",
-      rawMaterial: newMaterial,
-    });
-  } catch (error) {
-    console.error("❌ Error adding raw material:", error);
-    res.status(500).json({
-      success: false,
-      message: "Server error while adding raw material",
-      error: error.message,
-    });
-  }
-};
+//     await newMaterial.save();
+
+//     res.status(201).json({
+//       success: true,
+//       message: "✅ Raw material added successfully!",
+//       rawMaterial: newMaterial,
+//     });
+//   } catch (error) {
+//     console.error("❌ Erro raw material:", error);
+//     res.status(500).json({
+//       success: false,
+//       message: "Server error while adding raw material",
+//       error: error.message,
+//     });
+//   }
+// };
 
 const getRawMaterialsByFarmer = async (req, res) => {
   try {
-    const farmerId = req.user?._id;
+    const farmerId = "6918a41f15564d1941c098b5";
 
     const materials = await RawMaterial.find({ farmer: farmerId }).sort({
       createdAt: -1,
@@ -117,31 +118,33 @@ const getAllRawMaterials = async (req, res) => {
 
 const getSingleRawMaterial = async (req, res) => {
   try {
-    const { id } = req.params;
+    const { batchCode } = req.params;
+    console.log(batchCode);
 
-    if (!id.match(/^[0-9a-fA-F]{24}$/)) {
-      return res
-        .status(400)
-        .json({ message: "Invalid raw material ID format" });
-    }
+    // if (!batchCode.match(/^[0-9a-fA-F]{24}$/)) {
+    //   return res
+    //     .status(400)
+    //     .json({ message: "Invalid raw material ID format" });
+    // }
 
-    const material = await RawMaterial.findById(id).populate(
+    const material = await RawMaterial.findOne({ batchCode }).populate(
       "farmer",
       "name email phone role"
     );
+    console.log(material);
 
     if (!material) {
       return res.status(404).json({ message: "Raw material not found" });
     }
 
-    if (
-      req.user.role === "farmer" &&
-      material.farmer._id.toString() !== req.user._id.toString()
-    ) {
-      return res
-        .status(403)
-        .json({ message: "You are not authorized to view this material" });
-    }
+    // if (
+    //   req.user.role === "farmer" &&
+    //   material.farmer.batchCode.toString() !== req.user.batchCode.toString()
+    // ) {
+    //   return res
+    //     .status(403)
+    //     .json({ message: "You are not authorized to view this material" });
+    // }
 
     res.status(200).json({
       success: true,
@@ -157,92 +160,56 @@ const getSingleRawMaterial = async (req, res) => {
   }
 };
 
-
-const updateRawMaterial = async (req, res) => {
+const updateStatus = async (req, res) => {
   try {
-    const { id } = req.params;
+    const { batchCode } = req.params;
+    const { status } = req.body;
+    const manufacturerId = "691a0664cee641dce9ba2a2e"; // ⭐ From auth middleware
 
-    if (!mongoose.isValidObjectId(id)) {
-      return res.status(400).json({ message: "Invalid raw material ID format" });
+    if (!status) {
+      return res.status(400).json({ message: "Status is required" });
     }
 
-    const material = await RawMaterial.findById(id);
+    // Find item first
+    const material = await RawMaterial.findOne({ batchCode });
+
     if (!material) {
       return res.status(404).json({ message: "Raw material not found" });
     }
 
-    const isOwnerFarmer =
-      req.user?.role === "farmer" &&
-      material.farmer.toString() === req.user._id.toString();
-    const isAdmin = req.user?.role === "admin";
+    let updateFields = { status };
 
-    if (!isOwnerFarmer && !isAdmin) {
-      return res.status(403).json({ message: "Not authorized to update this material" });
+    if (status === "reserved") {
+      updateFields.requestedBy = manufacturerId;
     }
 
-    const allowed = [
-      "name",
-      "quantity",
-      "unit", // "kg" | "litre" | "ton" | "pcs"
-      "location",
-      "harvestDate",
-      "expiryDate",
-      "imageUrl",
-      "qualityGrade", // "A" | "B" | "C" | "Rejected"
-      "pricePerUnit",
-      "status", // "available" | "consumed" | "expired"
-    ];
-
-    const blocked = ["_id", "id", "batchCode", "farmer", "createdAt"];
-
-    for (const key of blocked) {
-      if (key in req.body) delete req.body[key];
-    }
-
-    const update = {};
-    for (const key of allowed) {
-      if (req.body[key] !== undefined && req.body[key] !== null) {
-        update[key] = req.body[key];
+    if (status === "sold") {
+      // If item was NOT reserved before → BLOCK
+      if (!material.requestedBy) {
+        return res.status(400).json({
+          message:
+            "Cannot mark as sold. No manufacturer has reserved this item.",
+        });
       }
+
+      // If requestedBy exists → assign manufacturer field
+      updateFields.manufacturer = material.requestedBy;
+      updateFields.requestedBy = null;
     }
 
-    const unitEnum = ["kg", "litre", "ton", "pcs"];
-    const gradeEnum = ["A", "B", "C", "Rejected"];
-    const statusEnum = ["available", "consumed", "expired"];
+    // Perform update
+    const updated = await RawMaterial.findOneAndUpdate(
+      { batchCode },
+      updateFields,
+      { new: true }
+    );
 
-    if (update.unit && !unitEnum.includes(update.unit)) {
-      return res.status(400).json({ message: "Invalid unit value" });
-    }
-    if (update.qualityGrade && !gradeEnum.includes(update.qualityGrade)) {
-      return res.status(400).json({ message: "Invalid qualityGrade value" });
-    }
-    if (update.status && !statusEnum.includes(update.status)) {
-      return res.status(400).json({ message: "Invalid status value" });
-    }
-
-    if (!isAdmin && update.qualityGrade === "Rejected") {
-      return res
-        .status(403)
-        .json({ message: "Only admin can mark as Rejected" });
-    }
-
-    Object.assign(material, update);
-    material.lastUpdated = new Date();
-
-    const saved = await material.save();
-
-    res.status(200).json({
-      success: true,
-      message: "✅ Raw material updated successfully",
-      rawMaterial: saved,
+    res.json({
+      message: "Status updated successfully",
+      rawMaterial: updated,
     });
   } catch (error) {
-    console.error("❌ Error updating raw material:", error);
-    res.status(500).json({
-      success: false,
-      message: "Server error while updating raw material",
-      error: error.message,
-    });
+    res.status(500).json({ message: "Server error", error: error.message });
   }
 };
 
@@ -252,7 +219,9 @@ const deleteRawMaterial = async (req, res) => {
 
     // 1️⃣ Validate ID
     if (!mongoose.isValidObjectId(id)) {
-      return res.status(400).json({ message: "Invalid raw material ID format" });
+      return res
+        .status(400)
+        .json({ message: "Invalid raw material ID format" });
     }
 
     // 2️⃣ Find material
@@ -296,7 +265,9 @@ const markAsConsumed = async (req, res) => {
     const { id } = req.params;
 
     if (!mongoose.isValidObjectId(id)) {
-      return res.status(400).json({ message: "Invalid raw material ID format" });
+      return res
+        .status(400)
+        .json({ message: "Invalid raw material ID format" });
     }
 
     const material = await RawMaterial.findById(id);
@@ -305,16 +276,22 @@ const markAsConsumed = async (req, res) => {
     }
 
     if (material.status === "consumed") {
-      return res.status(400).json({ message: "This material is already marked as consumed." });
+      return res
+        .status(400)
+        .json({ message: "This material is already marked as consumed." });
     }
 
     if (material.status === "expired") {
-      return res.status(400).json({ message: "Cannot consume expired material." });
+      return res
+        .status(400)
+        .json({ message: "Cannot consume expired material." });
     }
 
     const allowedRoles = ["manufacturer", "admin"];
     if (!allowedRoles.includes(req.user?.role)) {
-      return res.status(403).json({ message: "Only manufacturers or admins can mark materials as consumed." });
+      return res.status(403).json({
+        message: "Only manufacturers or admins can mark materials as consumed.",
+      });
     }
 
     material.status = "consumed";
@@ -337,13 +314,29 @@ const markAsConsumed = async (req, res) => {
   }
 };
 
+ const getmanufacturerbuyedraws = async (req, res) => {
+  try {
+    const manufacturerId = req.params.manufacturerid; // or from req.user.id
+    
+    const materials = await RawMaterial.find({
+      manufacturer: manufacturerId,   // ⭐ filter raws belonging to manufacturer
+      status: "sold"              // optional (only reserved or available)
+    });
+
+    res.json({ materials });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
 
 export {
-  addRawMaterial,
+  // addRawMaterial,
   getRawMaterialsByFarmer,
   getAllRawMaterials,
   getSingleRawMaterial,
-  updateRawMaterial,
+  updateStatus,
   deleteRawMaterial,
   markAsConsumed,
+  getmanufacturerbuyedraws,
 };

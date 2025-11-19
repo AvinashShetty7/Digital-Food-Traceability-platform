@@ -9,3 +9,113 @@
   "role":"farmer"
 }
 }
+
+
+Status	Who Can Set It	Why
+Available	Farmer	Farmer owns stock
+Reserved / Ordered	Manufacturer	Manufacturer initiates purchase
+Sold	Farmer	Farmer must confirm sale
+Delivered / PickedUp	Manufacturer	Manufacturer receives the goods
+Consumed	Manufacturer	Only manufacturer uses it
+Expired	System/Farmer	Date-based or manual
+
+
+
+
+🔹 1. Business Registration Proof
+
+Any one of the following:
+
+GST Certificate
+
+MSME Registration
+
+Company Incorporation Certificate (if Pvt Ltd/LLP)
+
+Trade License
+
+👉 Proves that the manufacturer is a registered business.
+
+🔹 2. FSSAI License (Mandatory for food processing)
+
+FSSAI = Food Safety and Standards Authority of India
+
+Types:
+
+Basic FSSAI (for small units)
+
+State FSSAI
+
+Central FSSAI (for large manufacturers)
+
+👉 Required to legally process/make food products.
+
+🔹 3. Manufacturer ID Proof
+
+Any one:
+
+Aadhaar Card
+
+PAN Card
+
+Voter ID
+
+Passport
+
+👉 Confirms the identity of the business owner.
+
+🔹 4. Address Proof (Factory / Production Unit)
+
+Examples:
+
+Electricity Bill
+
+Rent Agreement
+
+Property Tax Receipt
+
+Factory License
+
+👉 Confirms where the manufacturing takes place.
+
+🔹 5. Factory / Production Unit Photos (Optional but useful)
+
+Outside building
+
+Inside production area
+
+Equipment/machinery photos
+
+Storage and quality control area
+
+👉 Helps verify that the manufacturer really exists.
+
+🔹 6. Bank Account Proof (For payments)
+
+Any one:
+
+Cancelled cheque
+
+Passbook first page
+
+Bank statement
+
+👉 Used for payments, settlements, and fraud control.
+
+🔹 7. PAN (Business PAN or Individual PAN)
+
+Required for tax records
+
+Ensures legitimacy
+
+🔹 8. Partnership Deed / Board Resolution (Only if applicable)
+
+If it’s an LLP / partnership / company:
+
+Partnership deed
+
+Memorandum of Association (MOA)
+
+Articles of Association (AOA)
+
+👉 Verifies who is authorized to run the business.
