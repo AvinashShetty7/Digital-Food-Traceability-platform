@@ -25,6 +25,7 @@ import HomePage from "./Components/HomePage.jsx";
 import TraceProduct from "./Components/Traceproduct.jsx";
 import Singlerawdetails from "./Components/Manufcaturer/Singlerawdetails.jsx";
 import DashboardLayout from "./Components/Manufcaturer/ManuDashboard.jsx";
+import MyProducts from "./Components/Manufcaturer/MyProduct.jsx";
 
 const router = createBrowserRouter(
   createRoutesFromElements
@@ -46,8 +47,10 @@ const router = createBrowserRouter(
     <Route path="MarketPricePage" element={<MarketPricePage/>}></Route>
     <Route path="GoogleMap" element={<GoogleMap/>}></Route>
     <Route path="HomePage" element={<HomePage/>}></Route>
-    <Route path="TraceProduct" element={<TraceProduct/>}></Route>
+    <Route path="TraceProduct/:id" element={<TraceProduct/>}></Route>
     <Route path="DashboardLayout" element={<DashboardLayout/>}></Route>
+    <Route path="MyProducts" element={<MyProducts/>}></Route>
+
 
   </Route>
   )

@@ -2,9 +2,9 @@ import express from "express";
 import upload from "../middleware/upload.js"
 import {
   createProduct,
-  // getMyProducts,
+  getMyProducts,
   // getAllProducts,
-  // getSingleProduct,
+  getSingleProduct,
   // updateProductStatus,
   // deleteProduct,
   // getProductTrace,
@@ -15,11 +15,11 @@ const router = express.Router();
 
 // Manufacturer-only
 router.post("/create",upload.single("imageUrl"),createProduct);
-// router.get("/myproducts", authMiddleware, roleCheck(["manufacturer"]), getMyProducts);
+router.get("/manufacturer/:id", getMyProducts);
 
 // // Admin + Manufacturer
 // router.get("/all", authMiddleware, roleCheck(["admin", "manufacturer"]), getAllProducts);
-// router.get("/:id", authMiddleware, getSingleProduct);
+router.get("/:id",getSingleProduct);
 // router.put("/update-status/:id", authMiddleware, roleCheck(["manufacturer"]), updateProductStatus);
 // router.delete("/delete/:id", authMiddleware, roleCheck(["manufacturer", "admin"]), deleteProduct);
 

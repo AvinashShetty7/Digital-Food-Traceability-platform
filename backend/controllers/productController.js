@@ -2,6 +2,9 @@ import Product from "../models/Product.model.js";
 import RawMaterial from "../models/RawMaterial.model.js";
 import mongoose from "mongoose";
 import User from "../models/User.model.js";
+import dotenv from "dotenv";
+dotenv.config();
+
 
 /**
  * ✅ Create Product Controller
@@ -25,7 +28,6 @@ const createProduct = async (req, res) => {
       productionDate,
     } = req.body;
 
-    console.log(description,"ffffffffffffffffffffffffffffffffffffffffffffffffffff");
     
 
     // 1️⃣ Basic validation
@@ -114,7 +116,6 @@ const createProduct = async (req, res) => {
       expiryDate,
       status: "created",
     });
-    console.log(',mmmmmmmmmmmmmmmmmmmmmmmmmmmmmuuuuuuuuuuuuuuuuuuu');
     
     console.log(newProduct);
     
@@ -183,37 +184,17 @@ const createProduct = async (req, res) => {
  */
 const getMyProducts = async (req, res) => {
   try {
-    const manufacturerId = req.user._id;
+    const { id } = req.params;
 
-    // 1️⃣ Fetch products for this manufacturer
-    const products = await Product.find({ manufacturer: manufacturerId })
-      .populate("rawMaterials", "name batchCode status qualityGrade") // show related raw materials
-      .sort({ createdAt: -1 }); // latest first
+    const products = await Product.find({ manufacturer: id });
 
-    // 2️⃣ If none found
-    if (!products.length) {
-      return res.status(200).json({
-        success: true,
-        message: "No products found for this manufacturer.",
-        products: [],
-      });
-    }
-
-    // 3️⃣ Send success response
-    res.status(200).json({
-      success: true,
-      count: products.length,
-      products,
-    });
+    res.status(200).json({ success: true, products });
   } catch (error) {
-    console.error("❌ Error fetching manufacturer products:", error);
-    res.status(500).json({
-      success: false,
-      message: "Server error while fetching products.",
-      error: error.message,
-    });
+    console.error("Error fetching manufacturer products:", error);
+    res.status(500).json({ success: false, message: "Server error" });
   }
 };
+
 
 /**
  * ✅ Get All Products
@@ -268,51 +249,42 @@ const getAllProducts = async (req, res) => {
  * Route: GET /api/product/:id
  * Access: Authenticated users (admin or manufacturer)
  */
+
+
 const getSingleProduct = async (req, res) => {
   try {
     const { id } = req.params;
 
-    // 1️⃣ Validate ID
-    if (!mongoose.isValidObjectId(id)) {
-      return res.status(400).json({ message: "Invalid product ID format." });
-    }
-
-    // 2️⃣ Find product and populate references
     const product = await Product.findById(id)
-      .populate("manufacturer", "name email role")
-      .populate("rawMaterials", "name batchCode qualityGrade status farmer")
-      .populate("traceHistory.updatedBy", "name role")
-      .lean(); // return plain JS object for performance
+      .populate("manufacturer", "name email phone")
+      .populate({
+        path: "rawMaterials",
+        populate: {
+          path: "farmer",
+          select: "name phone email",
+        },
+      });
 
     if (!product) {
-      return res.status(404).json({ message: "Product not found." });
-    }
-
-    // 3️⃣ Restrict manufacturer to their own products only
-    if (
-      req.user.role === "manufacturer" &&
-      product.manufacturer._id.toString() !== req.user._id.toString()
-    ) {
-      return res.status(403).json({
-        message: "You are not authorized to view this product.",
+      return res.status(404).json({
+        success: false,
+        message: "Product not found",
       });
     }
 
-    // 4️⃣ Return success response
     res.status(200).json({
       success: true,
-      message: "✅ Product details fetched successfully.",
       product,
     });
   } catch (error) {
-    console.error("❌ Error fetching single product:", error);
+    console.error("Error fetching single product:", error);
     res.status(500).json({
       success: false,
-      message: "Server error while fetching product details.",
-      error: error.message,
+      message: "Error fetching product",
     });
   }
 };
+
 
 /**
  * ✅ Update Product Status (Manufacturer)
