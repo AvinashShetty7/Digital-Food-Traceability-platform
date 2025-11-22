@@ -123,33 +123,36 @@ const createProduct = async (req, res) => {
 
     // 6️⃣ Create QR payload
     const qrPayload = {
-      productId: newProduct._id,
-      productCode: newProduct.productCode,
-      traceUrl: `${process.env.FRONTEND_URL}/trace/${newProduct._id}`,
+      // productId: newProduct._id,
+      // productCode: newProduct.productCode,
+      traceUrl: `${process.env.FRONTEND_URL}/traceproduct/${newProduct._id}`,
 
-      productDetails: {
-        name: newProduct.name,
-        description: newProduct.description,
-        category: newProduct.category,
-        batchNumber: newProduct.batchNumber,
-        manufacturingLocation: newProduct.manufacturingLocation,
-        quantity: newProduct.quantity,
-        unit: newProduct.unit,
-        expiryDate: newProduct.expiryDate,
-        imageUrl: newProduct.imageUrl,
-      },
+      // productDetails: {
+      //   name: newProduct.name,
+      //   description: newProduct.description,
+      //   category: newProduct.category,
+      //   batchNumber: newProduct.batchNumber,
+      //   manufacturingLocation: newProduct.manufacturingLocation,
+      //   quantity: newProduct.quantity,
+      //   unit: newProduct.unit,
+      //   expiryDate: newProduct.expiryDate,
+      //   imageUrl: newProduct.imageUrl,
+      // },
 
-      manufacturerDetails: {
-        name: manufacturer.name,
-        email: manufacturer.email,
-        phone: manufacturer.phone,
-      },
+      // manufacturerDetails: {
+      //   name: manufacturer.name,
+      //   email: manufacturer.email,
+      //   phone: manufacturer.phone,
+      // },
 
-      rawMaterialsUsed: consumedRawDetails,
+      // rawMaterialsUsed: consumedRawDetails,
     };
 
     // 7️⃣ Generate QR Image (Base64)
-    const qrImage = await QRCode.toDataURL(JSON.stringify(qrPayload));
+    // const qrImage = await QRCode.toDataURL(JSON.stringify(qrPayload));
+    const qrImage = await QRCode.toDataURL(qrPayload.traceUrl);
+
+
 
     newProduct.qrCode = qrImage;
     newProduct.qrTracePayload = qrPayload;

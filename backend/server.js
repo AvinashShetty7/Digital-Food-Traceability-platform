@@ -13,9 +13,12 @@ import productRoutes from "./routes/productRoutes.js";
 
 dotenv.config();
 const app = express();
-
+const allowedOrigins = [
+  "http://localhost:5173",
+  "http://192.168.0.191:5173"
+];
 // Middleware
-app.use(cors({ credentials: true, origin: "http://localhost:5173" }));
+app.use(cors({ credentials: true, origin: allowedOrigins }));
 app.use(express.json());
 app.use(cookieParser());
 

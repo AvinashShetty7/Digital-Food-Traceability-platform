@@ -47,7 +47,7 @@ const router = createBrowserRouter(
     <Route path="MarketPricePage" element={<MarketPricePage/>}></Route>
     <Route path="GoogleMap" element={<GoogleMap/>}></Route>
     <Route path="HomePage" element={<HomePage/>}></Route>
-    <Route path="TraceProduct/:id" element={<TraceProduct/>}></Route>
+    <Route path="traceproduct/:id" element={<TraceProduct/>}></Route>
     <Route path="DashboardLayout" element={<DashboardLayout/>}></Route>
     <Route path="MyProducts" element={<MyProducts/>}></Route>
 
