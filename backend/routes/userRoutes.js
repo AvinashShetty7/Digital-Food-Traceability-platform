@@ -11,7 +11,7 @@ import {
   getAllUsers,
   deleteUser,
 } from "../controllers/userController.js";
-// import { authMiddleware, roleCheck } from "../middlewares/authMiddleware.js";
+import { checkAuth } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
@@ -22,14 +22,14 @@ router.post("/resend-otp",resendOTP);
 router.post("/verify-otp",verifyOtp);
 
 // Authenticated
-router.get("/validlogin",validLogin);
-router.post("/logout",logoutUser);
+router.get("/validlogin",checkAuth,validLogin);
+router.post("/logout",checkAuth,logoutUser);
 
 // // Admin-only
-router.get("/pending-users",getPendingUsers);
-router.put("/verify-user/:id",verifyUserByAdmin);
-router.get("/all",getAllUsers);
-router.delete("/delete/:id",deleteUser);
+router.get("/pending-users",checkAuth,getPendingUsers);
+router.put("/verify-user/:id",checkAuth,verifyUserByAdmin);
+router.get("/all",checkAuth,getAllUsers);
+router.delete("/delete/:id",checkAuth,deleteUser);
 
 export default router;
 

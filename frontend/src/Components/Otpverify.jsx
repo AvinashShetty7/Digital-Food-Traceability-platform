@@ -181,7 +181,7 @@ export default function OtpVerify() {
         otp,
         email: state.email,
         formData: state
-      });
+      },{withCredentials:true});
 
       if (res.status == 200) {
         navigate("/login");
@@ -202,7 +202,7 @@ export default function OtpVerify() {
     try {
       const res = await axios.post(`${API_URL}/api/user/resend-otp`, {
         email: state.email
-      });
+      },{withCredentials:true});
 
       if (res.data.success) {
         setMessage("OTP has been resent!");

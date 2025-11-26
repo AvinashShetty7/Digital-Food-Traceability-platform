@@ -66,7 +66,7 @@ import User from "../models/User.model.js";
 
 const getRawMaterialsByFarmer = async (req, res) => {
   try {
-    const farmerId = "6918a41f15564d1941c098b5";
+    const farmerId = req.user._id;
 
     const materials = await RawMaterial.find({ farmer: farmerId }).sort({
       createdAt: -1,
@@ -164,7 +164,7 @@ const updateStatus = async (req, res) => {
   try {
     const { batchCode } = req.params;
     const { status } = req.body;
-    const manufacturerId = "691a0664cee641dce9ba2a2e"; // ⭐ From auth middleware
+    const manufacturerId = req.user._id; // ⭐ From auth middleware
 
     if (!status) {
       return res.status(400).json({ message: "Status is required" });
@@ -316,7 +316,7 @@ const markAsConsumed = async (req, res) => {
 
  const getmanufacturerbuyedraws = async (req, res) => {
   try {
-    const manufacturerId = req.params.manufacturerid; // or from req.user.id
+    const manufacturerId = req.user._id; // or from req.user.id
     
     const materials = await RawMaterial.find({
       manufacturer: manufacturerId,   // ⭐ filter raws belonging to manufacturer

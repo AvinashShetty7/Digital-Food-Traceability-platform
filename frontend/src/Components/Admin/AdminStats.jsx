@@ -20,7 +20,7 @@ export default function AdminStats() {
       setError(null);
 
       // Axios API call
-      const { data } = await axios.get(`${API_URL}/api/admin/stats`);
+      const { data } = await axios.get(`${API_URL}/api/admin/stats`,{withCredentials:true} );
 
       if (data.success) {
         setStats(data.stats);

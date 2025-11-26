@@ -37,10 +37,10 @@ import axios from "axios";
 
 //   return (
 //     <div className="flex h-screen bg-gray-100">
-      
+
 //       {/* Sidebar */}
 //       <div
-//         className={`fixed z-20 top-0 left-0 h-full w-64 bg-white shadow-xl p-5 transition-transform duration-300 
+//         className={`fixed z-20 top-0 left-0 h-full w-64 bg-white shadow-xl p-5 transition-transform duration-300
 //         lg:translate-x-0 ${open ? "translate-x-0" : "-translate-x-full"}`}
 //       >
 //         <h2 className="text-xl font-bold mb-6">Farmer Panel</h2>
@@ -70,36 +70,36 @@ import axios from "axios";
 //         {/* Card */}
 //         <div id="add-docs" className="max-w-xl bg-white shadow-lg rounded-xl p-6">
 //           <div className="space-y-5">
-            
+
 //             <div>
 //               <label className="font-medium">Aadhar Card Photo</label>
-//               <input 
-//                 type="file" 
+//               <input
+//                 type="file"
 //                 onChange={(e) => setAadhar(e.target.files[0])}
 //                 className="w-full mt-1 border p-2 rounded-md bg-gray-50" />
 //             </div>
 
 //             <div>
 //               <label className="font-medium">Kisan Card</label>
-//               <input 
-//                 type="file" 
+//               <input
+//                 type="file"
 //                 onChange={(e) => setKisan(e.target.files[0])}
 //                 className="w-full mt-1 border p-2 rounded-md bg-gray-50" />
 //             </div>
 
 //             <div>
 //               <label className="font-medium">Land Record (Proof)</label>
-//               <input 
-//                 type="file" 
+//               <input
+//                 type="file"
 //                 onChange={(e) => setLand(e.target.files[0])}
 //                 className="w-full mt-1 border p-2 rounded-md bg-gray-50" />
 //             </div>
 
 //             <div>
 //               <label className="font-medium">Selfie of Farmer</label>
-//               <input 
-//                 type="file" 
-//                 accept="image/*" 
+//               <input
+//                 type="file"
+//                 accept="image/*"
 //                 capture="user"
 //                 onChange={(e) => setSelfie(e.target.files[0])}
 //                 className="w-full mt-1 border p-2 rounded-md bg-gray-50" />
@@ -126,7 +126,7 @@ import axios from "axios";
 
 export default function FarmerKYCPage() {
   const [open, setOpen] = useState(false);
-
+  const API_URL = import.meta.env.VITE_API_URL;
   const [aadhar, setAadhar] = useState(null);
   const [kisan, setKisan] = useState(null);
   const [land, setLand] = useState(null);
@@ -141,12 +141,10 @@ export default function FarmerKYCPage() {
       formData.append("selfie", selfie);
 
       const res = await axios.post(
-        "http://localhost:3000/api/farmer/upload-kyc",
+        `${API_URL}/api/farmer/upload-kyc`,
         formData,
         {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
+          withCredentials: true,
         }
       );
 
@@ -159,13 +157,15 @@ export default function FarmerKYCPage() {
 
   return (
     <div className="flex min-h-screen bg-gradient-to-br from-green-100 via-white to-green-50 text-gray-800">
-
       {/* Main Content */}
       <div className="flex-1 px-6 py-10 ">
         <h1 className="text-3xl font-bold text-green-800 mb-8 text-center lg:text-2xl">
           Upload KYC Documents
         </h1>
-        <p className="text-3xl font-bold text-red-800 mb-8 text-center lg:text-2xl" >upload documents if not,if already uploaded Your documents verification is in progress</p>
+        <p className="text-3xl font-bold text-red-800 mb-8 text-center lg:text-2xl">
+          upload documents if not,if already uploaded Your documents
+          verification is in progress
+        </p>
 
         {/* Upload Card */}
         <div
@@ -232,5 +232,3 @@ export default function FarmerKYCPage() {
     </div>
   );
 }
-
-

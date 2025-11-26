@@ -111,7 +111,7 @@ export default function LoginPage() {
       const res = await axios.post(`${API_URL}/api/user/login`, {
         email,
         password,
-      });
+      },{withCredentials:true} );
       console.log("Login Success", res.data);
       // Redirect after login
       if (res.data.user.role == "farmer") {

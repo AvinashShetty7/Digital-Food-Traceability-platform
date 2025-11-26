@@ -4,7 +4,7 @@ import User from "../models/User.model.js";
 export const uploadManufacturerKYC = async (req, res) => {
   try {
     // const userId = req.userId; // must come from auth middleware
-    const userId = "691a0664cee641dce9ba2a2e";
+    const userId = req.user._id;
 
     const user = await User.findById(userId);
     if (!user) return res.status(400).json({ message: "User not found" });

@@ -1,6 +1,15 @@
 import { useState } from "react";
 import { Link, Outlet } from "react-router-dom";
-import { Menu, X, Upload,Plus, Package, Leaf, Pencil, BarChart2 } from "lucide-react";
+import {
+  Menu,
+  X,
+  Upload,
+  Plus,
+  Package,
+  Leaf,
+  Pencil,
+  BarChart2,
+} from "lucide-react";
 
 export default function FarmerDashboard() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -9,11 +18,27 @@ export default function FarmerDashboard() {
   const menuItems = [
     { label: "Market Price", path: "/farmer/marketprice", icon: BarChart2 },
     { label: "Add raw material", path: "/farmer/AddRawMaterial", icon: Plus },
-    { label: "My raw material", path: "/farmer/FarmerRawMaterialList", icon: Leaf },
+    {
+      label: "My raw material",
+      path: "/farmer/FarmerRawMaterialList",
+      icon: Leaf,
+    },
     { label: "uploaded documents", path: "#", icon: Upload },
     { label: "update profile", path: "#", icon: Pencil },
   ];
-
+  const handleLogout = async () => {
+    try {
+      await axios.post(
+        `${import.meta.env.VITE_API_URL}/api/user/logout`,
+        {},
+        { withCredentials: true }
+      );
+      console.log("Logout success");
+      navigate("/login");
+    } catch (err) {
+      console.error("Logout failed", err);
+    }
+  };
   return (
     <div className="flex h-screen bg-gray-50">
       {/* Overlay for mobile */}
@@ -27,7 +52,9 @@ export default function FarmerDashboard() {
       {/* Sidebar */}
       <aside
         className={`fixed md:relative top-0 left-0 h-screen w-64 bg-gradient-to-b from-green-700 via-green-800 to-green-900 text-white transform transition-all duration-300 z-40 shadow-xl flex flex-col overflow-y-auto
-        ${sidebarOpen ? "translate-x-0" : "-translate-x-full"} md:translate-x-0`}
+        ${
+          sidebarOpen ? "translate-x-0" : "-translate-x-full"
+        } md:translate-x-0`}
       >
         {/* Sidebar Header */}
         <div className="p-6 border-b border-green-600">
@@ -71,10 +98,20 @@ export default function FarmerDashboard() {
             );
           })}
         </nav>
+                <div>
+            <button
+          onClick={handleLogout}
+          className="w-full flex items-center gap-3  rounded-lg text-sm font-medium transition-all duration-200 flex-1 px-4 py-3 space-y-1 text-green-100 hover:bg-green-600 hover:text-white"
+        >
+          Logout
+        </button>
+        </div>
 
         {/* Sidebar Footer */}
         <div className="p-4 border-t border-green-600">
-          <p className="text-xs text-green-200 text-center">© 2025 Farm Direct farmer</p>
+          <p className="text-xs text-green-200 text-center">
+            © 2025 Farm Direct farmer
+          </p>
         </div>
       </aside>
 
@@ -89,7 +126,9 @@ export default function FarmerDashboard() {
             >
               <Menu size={24} />
             </button>
-            <h1 className="text-2xl md:text-3xl font-bold text-gray-800">Dashboard</h1>
+            <h1 className="text-2xl md:text-3xl font-bold text-gray-800">
+              Dashboard
+            </h1>
           </div>
 
           <div className="flex items-center gap-3">

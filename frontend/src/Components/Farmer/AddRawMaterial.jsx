@@ -35,7 +35,10 @@ export default function AddRawMaterial() {
       const res = await axios.post(
         `${API_URL}/api/farmer/upload-farmimage`,
         formData,
-        { headers: { "Content-Type": "multipart/form-data" } }
+        { 
+          withCredentials:true,
+          headers: { "Content-Type": "multipart/form-data" } 
+      }
       );
       alert(res.data.message || "Raw Material Added Successfully");
     } catch (error) {

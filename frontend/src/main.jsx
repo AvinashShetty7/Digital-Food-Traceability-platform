@@ -8,7 +8,7 @@ import {
   Route,
   RouterProvider,
 } from "react-router-dom";
-import Register from "./components/Register.jsx";
+import Register from "./Components/Register.jsx";
 import OtpVerify from "./Components/Otpverify.jsx";
 import LoginPage from "./Components/LoginPage.jsx";
 import FarmerKYCPage from "./Components/Farmer/FarmerKYCPage.jsx";
@@ -20,7 +20,6 @@ import ManufacturerKYCPage from "./Components/Manufcaturer/ManufacturerKYCPage.j
 import CreateProduct from "./Components/Manufcaturer/CreateProduct.jsx";
 import Fetchallraws from "./Components/Manufcaturer/Fetchallraws.jsx";
 import MarketPricePage from "./Components/MarketPricePage.jsx";
-import GoogleMap from "./Components/Farmer/GoogleMap.jsx";
 import HomePage from "./Components/HomePage.jsx";
 import TraceProduct from "./Components/Traceproduct.jsx";
 import Singlerawdetails from "./Components/Manufcaturer/Singlerawdetails.jsx";

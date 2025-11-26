@@ -53,7 +53,7 @@ const createProduct = async (req, res) => {
     }
 
     // 2️⃣ Validate manufacturer (from token)
-    const manufacturer = await User.findById("691a0664cee641dce9ba2a2e").select(
+    const manufacturer = await User.findById(req.user._id).select(
       "name email phone role"
     );
 
@@ -67,7 +67,7 @@ const createProduct = async (req, res) => {
     // 3️⃣ Fetch & validate raw materials
     const validMaterials = await RawMaterial.find({
       _id: { $in: parsedMaterials },
-      manufacturer: "691a0664cee641dce9ba2a2e", // must belong to manufacturer
+      manufacturer:req.user._id, // must belong to manufacturer
       status: "sold", // manufacturer reserved these raws
       expiryDate: { $gte: new Date() }, // not expired
     }).populate("farmer", "name phone");
@@ -106,7 +106,7 @@ const createProduct = async (req, res) => {
       category,
       batchNumber,
       manufacturingLocation,
-      manufacturer: "691a0664cee641dce9ba2a2e",
+      manufacturer: req.user._id,
       rawMaterials: parsedMaterials,
       consumedRawDetails,
       quantity,
@@ -187,7 +187,7 @@ const createProduct = async (req, res) => {
  */
 const getMyProducts = async (req, res) => {
   try {
-    const { id } = req.params;
+    const id = req.user._id;
 
     const products = await Product.find({ manufacturer: id });
 

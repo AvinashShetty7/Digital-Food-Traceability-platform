@@ -14,7 +14,7 @@ const RawMaterialList = () => {
   useEffect(() => {
     const fetchRawMaterials = async () => {
       try {
-        const response = await axios.get(`${API_URL}/api/rawmaterial/allraws`);
+        const response = await axios.get(`${API_URL}/api/rawmaterial/allraws`,{withCredentials:true} );
         setRawMaterials(response.data.materials);
         setLoading(false);
       } catch (error) {

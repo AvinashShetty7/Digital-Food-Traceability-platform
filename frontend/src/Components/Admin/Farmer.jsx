@@ -11,7 +11,7 @@ export default function Farmers() {
   useEffect(() => {
     const loadFarmers = async () => {
       try {
-        const res = await axios.get(`${API_URL}/api/admin/allfarmers`);
+        const res = await axios.get(`${API_URL}/api/admin/allfarmers`,{withCredentials:true} );
         console.log(res.data);
         
         setFarmers(res.data.farmers || []);
@@ -29,7 +29,7 @@ export default function Farmers() {
     if (!window.confirm("Are you sure you want to delete this farmer?")) return;
 
     try {
-      await axios.delete(`${API_URL}/api/admin/deleteuser/${id}`);
+      await axios.delete(`${API_URL}/api/admin/deleteuser/${id}`,{withCredentials:true} );
       setFarmers(farmers.filter((f) => f._id !== id));
       alert("Farmer deleted successfully!");
     } catch (err) {

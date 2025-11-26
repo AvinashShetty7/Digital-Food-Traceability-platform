@@ -255,8 +255,8 @@ const logoutUser = async (req, res) => {
     // 1️⃣ Clear the authentication cookie (tokenid)
     res.clearCookie("tokenid", {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
+      secure: false,
+      sameSite: "Lax",
     });
 
     // 2️⃣ Respond success
@@ -276,9 +276,9 @@ const logoutUser = async (req, res) => {
 
 const getPendingUsers = async (req, res) => {
   try {
-    // if (req.user?.role !== "admin") {
-    //   return res.status(403).json({ message: "Access denied. Admins only." });
-    // }
+    if (req.user?.role !== "admin") {
+      return res.status(403).json({ message: "Access denied. Admins only." });
+    }
 
     const pendingUsers = await User.find({ verified: false })
       .select("-password ") // exclude sensitive fields
@@ -454,50 +454,11 @@ const deleteUser = async (req, res) => {
 
 
 const validLogin = async (req, res) => {
-  try {
-    // 1️⃣ Read token from cookie
-    const token = req.cookies?.tokenid;
-    if (!token) {
-      return res
-        .status(401)
-        .json({ success: false, message: "No token found. Please log in." });
-    }
-
-    // 2️⃣ Verify token
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-
-    // 3️⃣ Fetch user from DB
-    const user = await User.findById(decoded.userId).select(
-      "-password -otp -otpExpiry"
-    );
-
-    if (!user) {
-      return res
-        .status(404)
-        .json({ success: false, message: "User not found." });
-    }
-
-    // 4️⃣ Check if admin verified account
-    if (!user.verified) {
-      return res.status(403).json({
-        success: false,
-        message: "Account pending admin approval.",
-      });
-    }
-
-    // 5️⃣ Return valid session data
-    res.status(200).json({
-      success: true,
-      message: "✅ Valid login session.",
-      user,
-    });
-  } catch (error) {
-    console.error("❌ Error validating login:", error);
-    res.status(401).json({
-      success: false,
-      message: "Invalid or expired session. Please log in again.",
-    });
-  }
+  
+  res.status(200).json({
+    message: "User logged in",
+    user: req.user
+  });
 };
 
 export {

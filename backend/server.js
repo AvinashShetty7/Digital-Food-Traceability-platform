@@ -3,7 +3,7 @@ import dotenv from "dotenv";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import connectDB from "./db/db.js"
-
+import {checkAuth} from "./middleware/authMiddleware.js"
 import userRoutes from "./routes/userRoutes.js";
 import rawMaterialRoutes from "./routes/rawMaterialRoutes.js";
 import imageRoutes from "./routes/imageRoutes.js"
@@ -26,12 +26,12 @@ app.use(cookieParser());
 connectDB();
 
 // Routes
-app.use("/api/user", userRoutes);
-app.use("/api/rawmaterial", rawMaterialRoutes);
-app.use("/api/farmer", imageRoutes);
-app.use("/api/product", productRoutes);
+app.use("/api/user",userRoutes);
+app.use("/api/rawmaterial",checkAuth ,rawMaterialRoutes);
+app.use("/api/farmer", checkAuth,imageRoutes);
+app.use("/api/product",productRoutes);
 // app.use("/api/trace", traceabilityRoutes);
-app.use("/api/admin", adminRoutes);
+app.use("/api/admin",checkAuth, adminRoutes);
 
 // Default
 app.get("/", (req, res) => res.send("Food Supply Chain API Running ✅"));

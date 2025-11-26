@@ -23,9 +23,8 @@ export default function CreateProduct() {
   useEffect(() => {
     const fetchRawMaterials = async () => {
       try {
-        const MANUFACTURER_ID = "691a0664cee641dce9ba2a2e";
         const res = await axios.get(
-          `${API_URL}/api/rawmaterial/mybuyedraws/${MANUFACTURER_ID}`
+          `${API_URL}/api/rawmaterial/mybuyedraws`,{withCredentials:true} 
         );
         setRawMaterials(res.data.materials || []);
       } catch (error) {
@@ -75,7 +74,7 @@ export default function CreateProduct() {
       // raw materials JSON encoded
       fd.append("rawMaterials", JSON.stringify(selectedMaterials));
 
-      await axios.post(`${API_URL}/api/product/create`, fd);
+      await axios.post(`${API_URL}/api/product/create`, fd,{withCredentials:true} );
 
       alert("Product created successfully!");
     } catch (error) {

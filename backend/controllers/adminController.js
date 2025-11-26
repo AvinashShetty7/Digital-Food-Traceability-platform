@@ -3,7 +3,6 @@ import RawMaterial from "../models/RawMaterial.model.js";
 
 const getstatistics = async (req, res) => {
   try {
-    console.log(",mmmmmmmmmmmmmmmmmmmmm");
 
     // 1️⃣ Aggregate user stats
     const totalUsers = await User.countDocuments();
@@ -113,7 +112,8 @@ const verifyProduct = async (req, res) => {
 };
 
 const verifyfarmer = async (req, res) => {
-  try {
+  
+  try {    
     const farmer = await User.findByIdAndUpdate(
       req.params.id,
       { verified: true },
@@ -162,7 +162,6 @@ const pendingmanufacturers = async (req, res) => {
 // Get all farmers
 const getAllFarmers = async (req, res) => {
   try {
-    console.log("mmmmmmmmmmmmmmmmmmmmmmmmmmm");
 
     const farmers = await User.find({ role: "farmer" }).sort({ createdAt: -1 });
 

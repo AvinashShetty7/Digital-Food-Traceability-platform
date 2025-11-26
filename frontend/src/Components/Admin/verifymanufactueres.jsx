@@ -10,7 +10,7 @@ export default function VerifyManufacturers() {
   useEffect(() => {
     const loadmanufacturers = async () => {
       try {
-        const res = await axios.get(`${API_URL}/api/admin/manufacturers/pending`);
+        const res = await axios.get(`${API_URL}/api/admin/manufacturers/pending`,{withCredentials:true} );
         setmanufacturers(res.data.manufacturers || []);
       } catch (err) {
         console.log("Error loading manufacturers", err);
@@ -23,7 +23,7 @@ export default function VerifyManufacturers() {
 
   const verifymanufacturer = async (id) => {
     try {
-      await axios.put(`${API_URL}/api/admin/verify-manufacturer/${id}`);
+      await axios.put(`${API_URL}/api/admin/verify-manufacturer/${id}`,{},{withCredentials:true} );
       alert("manufacturer verified successfully!");
       setmanufacturers(manufacturers.filter((f) => f._id !== id)); // remove from pending list
     } catch (err) {

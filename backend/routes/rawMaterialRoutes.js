@@ -21,7 +21,7 @@ router.get("/myraws", getRawMaterialsByFarmer);
 // // Manufacturer/Admin view
 router.get("/allraws",getAllRawMaterials);
 router.get("/:batchCode",getSingleRawMaterial);
-router.get("/mybuyedraws/:manufacturerid",getmanufacturerbuyedraws);
+router.get("/mybuyedraws",getmanufacturerbuyedraws);
 
 
 // // Update/Delete

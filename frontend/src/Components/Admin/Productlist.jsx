@@ -13,7 +13,7 @@ export default function Productlist() {
     const fetchProducts = async () => {
       try {
         const res = await axios.get(
-          `${API_URL}/api/product/manufacturer/${MANUFACTURER_ID}`
+          `${API_URL}/api/product/manufacturer/${MANUFACTURER_ID}`,{withCredentials:true} 
         );
         setProducts(res.data.products || []);
       } catch (error) {

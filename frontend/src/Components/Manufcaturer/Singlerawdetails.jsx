@@ -20,7 +20,7 @@ export default function Singlerawdetails() {
   useEffect(() => {
     const fetchItem = async () => {
       try {
-        const res = await axios.get(`${API_URL}/api/rawmaterial/${batchCode}`);
+        const res = await axios.get(`${API_URL}/api/rawmaterial/${batchCode}`,{withCredentials:true} );
         setItem(res.data.rawMaterial);
         setStatus(res.data.rawMaterial.status);
         setLoading(false);
@@ -39,6 +39,7 @@ export default function Singlerawdetails() {
         {
           status,
         }
+        ,{withCredentials:true} 
       );
       alert(res.data.message || "Status Updated");
     } catch (err) {

@@ -10,7 +10,7 @@ export default function Manufacturer() {
   useEffect(() => {
     const loadmanufacturers = async () => {
       try {
-        const res = await axios.get(`${API_URL}/api/admin/allmanufacturers`);
+        const res = await axios.get(`${API_URL}/api/admin/allmanufacturers`,{withCredentials:true} );
         console.log(res.data);
         
         setmanufacturers(res.data.manufacturers || []);
@@ -28,7 +28,7 @@ export default function Manufacturer() {
     if (!window.confirm("Are you sure you want to delete this manufacturer?")) return;
 
     try {
-      await axios.delete(`${API_URL}/api/admin/deleteuser/${id}`);
+      await axios.delete(`${API_URL}/api/admin/deleteuser/${id}`,{withCredentials:true} );
       setmanufacturers(manufacturers.filter((f) => f._id !== id));
       alert("manufacturer deleted successfully!");
     } catch (err) {

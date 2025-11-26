@@ -12,7 +12,7 @@ export default function FarmerRawMaterialList() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await axios.get(`${API_URL}/api/rawmaterial/myraws`);
+        const res = await axios.get(`${API_URL}/api/rawmaterial/myraws`,{withCredentials:true} );
         setItems(res.data.materials || []);
       } catch (error) {
         console.log("Error fetching raw materials", error);

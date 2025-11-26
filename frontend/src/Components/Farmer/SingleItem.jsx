@@ -20,7 +20,9 @@ export default function SingleItem() {
   useEffect(() => {
     const fetchItem = async () => {
       try {
-        const res = await axios.get(`${API_URL}/api/rawmaterial/${batchCode}`);
+        const res = await axios.get(`${API_URL}/api/rawmaterial/${batchCode}`, {
+          withCredentials: true,
+        });
         setItem(res.data.rawMaterial);
         setStatus(res.data.rawMaterial.status);
         setLoading(false);
@@ -38,7 +40,8 @@ export default function SingleItem() {
         `${API_URL}/api/rawmaterial/update/${batchCode}`,
         {
           status,
-        }
+        },
+        { withCredentials: true }
       );
       alert(res.data.message || "Status Updated");
     } catch (err) {
@@ -182,12 +185,13 @@ export default function SingleItem() {
                   </p>
                   <button
                     onClick={() =>
-                      openDirections("kakthota hondadmane ullor 11")
+                      openDirections(item.location)
                     }
                     className="px-3 py-1 bg-green-600 text-white rounded"
                   >
-                    <span className="font-semibold tracking-wide">Open in Maps 🚚</span>
-
+                    <span className="font-semibold tracking-wide">
+                      Open in Maps 🚚
+                    </span>
                   </button>
                 </div>
 

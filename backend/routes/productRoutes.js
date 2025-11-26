@@ -9,13 +9,13 @@ import {
   // deleteProduct,
   // getProductTrace,
 } from "../controllers/productController.js";
-// import { authMiddleware, roleCheck } from "../middlewares/authMiddleware.js";
+import { checkAuth} from "../middleware/authMiddleware.js"
 
 const router = express.Router();
 
 // Manufacturer-only
-router.post("/create",upload.single("imageUrl"),createProduct);
-router.get("/manufacturer/:id", getMyProducts);
+router.post("/create",checkAuth,upload.single("imageUrl"),createProduct);
+router.get("/manufacturer", getMyProducts);
 
 // // Admin + Manufacturer
 // router.get("/all", authMiddleware, roleCheck(["admin", "manufacturer"]), getAllProducts);

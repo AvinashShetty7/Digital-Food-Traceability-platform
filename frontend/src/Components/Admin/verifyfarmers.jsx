@@ -10,7 +10,7 @@ export default function VerifyFarmers() {
   useEffect(() => {
     const loadFarmers = async () => {
       try {
-        const res = await axios.get(`${API_URL}/api/admin/farmers/pending`);
+        const res = await axios.get(`${API_URL}/api/admin/farmers/pending`,{withCredentials:true} );
         setFarmers(res.data.farmers || []);
       } catch (err) {
         console.log("Error loading farmers", err);
@@ -22,8 +22,8 @@ export default function VerifyFarmers() {
   }, []);
 
   const verifyFarmer = async (id) => {
-    try {
-      await axios.put(`${API_URL}/api/admin/verify-farmer/${id}`);
+    try { 
+      await axios.put(`${API_URL}/api/admin/verify-farmer/${id}`,{},{withCredentials:true} );
       alert("Farmer verified successfully!");
       setFarmers(farmers.filter((f) => f._id !== id)); // remove from pending list
     } catch (err) {

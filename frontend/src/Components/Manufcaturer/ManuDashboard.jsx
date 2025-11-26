@@ -1,6 +1,15 @@
 import { useState } from "react";
 import { Link, Outlet } from "react-router-dom";
-import { Menu, X , Leaf, BarChart2, PackageSearch, Plus, LifeBuoy, TicketCheck } from "lucide-react";
+import {
+  Menu,
+  X,
+  Leaf,
+  BarChart2,
+  PackageSearch,
+  Plus,
+  LifeBuoy,
+  TicketCheck,
+} from "lucide-react";
 
 export default function DashboardLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -14,6 +23,19 @@ export default function DashboardLayout() {
     { label: "Reserved raws", path: "#", icon: LifeBuoy },
     { label: "consumed raws", path: "#", icon: TicketCheck },
   ];
+  const handleLogout = async () => {
+    try {
+      await axios.post(
+        `${import.meta.env.VITE_API_URL}/api/user/logout`,
+        {},
+        { withCredentials: true }
+      );
+      console.log("Logout success");
+      navigate("/login");
+    } catch (err) {
+      console.error("Logout failed", err);
+    }
+  };
 
   return (
     <div className="flex h-screen bg-gray-50">
@@ -28,7 +50,9 @@ export default function DashboardLayout() {
       {/* Sidebar */}
       <aside
         className={`fixed md:relative top-0 left-0 h-screen w-64 bg-gradient-to-b from-green-700 via-green-800 to-green-900 text-white transform transition-all duration-300 z-40 shadow-xl flex flex-col overflow-y-auto
-        ${sidebarOpen ? "translate-x-0" : "-translate-x-full"} md:translate-x-0`}
+        ${
+          sidebarOpen ? "translate-x-0" : "-translate-x-full"
+        } md:translate-x-0`}
       >
         {/* Sidebar Header */}
         <div className="p-6 border-b border-green-600">
@@ -72,10 +96,20 @@ export default function DashboardLayout() {
             );
           })}
         </nav>
+        <div>
+          <button
+            onClick={handleLogout}
+            className="w-full flex items-center gap-3  rounded-lg text-sm font-medium transition-all duration-200 flex-1 px-4 py-3 space-y-1 text-green-100 hover:bg-green-600 hover:text-white"
+          >
+            Logout
+          </button>
+        </div>
 
         {/* Sidebar Footer */}
         <div className="p-4 border-t border-green-600">
-          <p className="text-xs text-green-200 text-center">© 2025 Farm Direct Manufacturer</p>
+          <p className="text-xs text-green-200 text-center">
+            © 2025 Farm Direct Manufacturer
+          </p>
         </div>
       </aside>
 
@@ -90,7 +124,9 @@ export default function DashboardLayout() {
             >
               <Menu size={24} />
             </button>
-            <h1 className="text-2xl md:text-3xl font-bold text-gray-800">Dashboard</h1>
+            <h1 className="text-2xl md:text-3xl font-bold text-gray-800">
+              Dashboard
+            </h1>
           </div>
 
           <div className="flex items-center gap-3">

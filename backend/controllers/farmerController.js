@@ -4,7 +4,7 @@ import RawMaterialModel from "../models/RawMaterial.model.js";
 export const uploadKYC = async (req, res) => {
   try {
     // const userId = req.userId; // must come from auth middleware
-    const userId = "6918a41f15564d1941c098b5";
+    const userId = req.user._id;
 
     const user = await User.findById(userId);
     if (!user) return res.status(400).json({ message: "User not found" });
@@ -58,7 +58,7 @@ export const uploadKYC = async (req, res) => {
 
 export const createRawMaterial = async (req, res) => {
   try {
-    const farmerId = "6918a41f15564d1941c098b5";
+    const farmerId = req.user._id;
 
     // find farmer (optional - good to validate)
     const user = await User.findById(farmerId);

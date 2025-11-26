@@ -1,8 +1,11 @@
 import { useState } from "react";
 import { Link, Outlet } from "react-router-dom";
-import { Menu, X, BarChart3, CheckCircle, Package, Leaf, Users, BarChart2 } from "lucide-react";
+import { Menu, X, BarChart3, CheckCircle, Package, Leaf, Users, BarChart2, LogOut } from "lucide-react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 export default function AdminDashboardLayout() {
+  const navigate=useNavigate();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState("/admin/stats");
 
@@ -17,6 +20,19 @@ export default function AdminDashboardLayout() {
     { label: "Market Price", path: "/admin/MarketPrice", icon: BarChart3 },
   ];
 
+  const handleLogout = async () => {
+    try {
+      await axios.post(
+        `${import.meta.env.VITE_API_URL}/api/user/logout`,
+        {},
+        { withCredentials: true }
+      );
+      console.log("Logout success");
+      navigate("/login");
+    } catch (err) {
+      console.error("Logout failed", err);
+    }
+  };
   return (
     <div className="flex h-screen bg-gray-50">
       {/* Overlay for mobile */}
@@ -74,6 +90,16 @@ export default function AdminDashboardLayout() {
             );
           })}
         </nav>
+        
+        <span>
+            <button
+          onClick={handleLogout}
+          className="w-full flex items-center gap-3  rounded-lg text-sm font-medium transition-all duration-200 flex-1 px-4 py-3 space-y-1 text-green-100 hover:bg-green-600 hover:text-white"
+        >
+          <LogOut/>
+          Logout
+        </button>
+        </span>
 
         {/* Sidebar Footer */}
         <div className="p-4 border-t border-green-600">

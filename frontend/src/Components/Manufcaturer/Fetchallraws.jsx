@@ -11,7 +11,7 @@ export default function Fetchallraws() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await axios.get(`${API_URL}/api/rawmaterial/allraws`);
+        const res = await axios.get(`${API_URL}/api/rawmaterial/allraws`,{withCredentials:true} );
         setItems(res.data.materials || []);
       } catch (error) {
         console.log("Error fetching raw materials", error);
