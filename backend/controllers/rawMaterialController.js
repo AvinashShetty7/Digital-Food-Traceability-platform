@@ -214,6 +214,12 @@ const getSingleRawMaterial = async (req, res) => {
     const material = await RawMaterial.findOne({ batchCode }).populate(
       "farmer",
       "name email phone role"
+    ).populate(
+        "requestedBy",
+      "name email phone role"
+    ).populate(
+      "manufacturer",
+      "name email phone role"
     );
     console.log(material);
 
@@ -262,6 +268,10 @@ const updateStatus = async (req, res) => {
     }
 
     let updateFields = { status };
+
+ if (status === "available") {
+      updateFields.requestedBy = null;
+    }
 
     if (status === "reserved") {
       updateFields.requestedBy = manufacturerId;

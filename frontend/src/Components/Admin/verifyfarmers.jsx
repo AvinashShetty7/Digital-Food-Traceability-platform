@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { Link } from "react-router-dom";
 
 export default function VerifyFarmers() {
   const API_URL = import.meta.env.VITE_API_URL;
@@ -10,7 +11,9 @@ export default function VerifyFarmers() {
   useEffect(() => {
     const loadFarmers = async () => {
       try {
-        const res = await axios.get(`${API_URL}/api/admin/farmers/pending`,{withCredentials:true} );
+        const res = await axios.get(`${API_URL}/api/admin/farmers/pending`, {
+          withCredentials: true,
+        });
         setFarmers(res.data.farmers || []);
       } catch (err) {
         console.log("Error loading farmers", err);
@@ -22,8 +25,12 @@ export default function VerifyFarmers() {
   }, []);
 
   const verifyFarmer = async (id) => {
-    try { 
-      await axios.put(`${API_URL}/api/admin/verify-farmer/${id}`,{},{withCredentials:true} );
+    try {
+      await axios.put(
+        `${API_URL}/api/admin/verify-farmer/${id}`,
+        {},
+        { withCredentials: true }
+      );
       alert("Farmer verified successfully!");
       setFarmers(farmers.filter((f) => f._id !== id)); // remove from pending list
     } catch (err) {
@@ -56,38 +63,45 @@ export default function VerifyFarmers() {
 
       <div className="grid gap-6 md:grid-cols-2">
         {farmers.map((farmer) => (
-          <div
+          <Link
             key={farmer._id}
-            className="bg-white p-6 shadow rounded-xl border space-y-4"
+            to={`/admin/Viewfarmerdocs/${farmer._id}`}
           >
-            <div>
-              <h2 className="text-xl font-bold text-green-900">{farmer.name}</h2>
-              <p>Email: {farmer.email}</p>
-              <p>Phone: {farmer.phone}</p>
-              <p className="text-sm">Role: {farmer.role}</p>
-            </div>
-
-            {/* Documents Preview */}
-            <div className="grid grid-cols-2 gap-3">
-              {farmer.documents.map((doc, index) => (
-                <div key={index} className="space-y-1 text-center">
-                  <p className="font-medium text-sm">{doc.documentType}</p>
-                  <img
-                    src={doc.documentUrl}
-                    alt={doc.documentType}
-                    className="w-full h-32 object-cover rounded shadow"
-                  />
-                </div>
-              ))}
-            </div>
-
-            <button
-              onClick={() => verifyFarmer(farmer._id)}
-              className="w-full py-2 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-lg transition"
+            <div
+              key={farmer._id}
+              className="bg-white p-6 shadow rounded-xl border space-y-4"
             >
-              Verify Farmer ✔
-            </button>
-          </div>
+              <div>
+                <h2 className="text-xl font-bold text-green-900">
+                  {farmer.name}
+                </h2>
+                <p>Email: {farmer.email}</p>
+                <p>Phone: {farmer.phone}</p>
+                <p className="text-sm">Role: {farmer.role}</p>
+              </div>
+
+              {/* Documents Preview */}
+              <div className="grid grid-cols-2 gap-3">
+                {farmer.documents.map((doc, index) => (
+                  <div key={index} className="space-y-1 text-center">
+                    <p className="font-medium text-sm">{doc.documentType}</p>
+                    <img
+                      src={doc.documentUrl}
+                      alt={doc.documentType}
+                      className="w-full h-32 object-cover rounded shadow"
+                    />
+                  </div>
+                ))}
+              </div>
+
+              <button
+                onClick={() => verifyFarmer(farmer._id)}
+                className="w-full py-2 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-lg transition"
+              >
+                Verify Farmer ✔
+              </button>
+            </div>
+          </Link>
         ))}
       </div>
     </div>

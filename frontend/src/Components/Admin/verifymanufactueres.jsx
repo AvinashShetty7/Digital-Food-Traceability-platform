@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { Link } from "react-router-dom";
 
 export default function VerifyManufacturers() {
   const API_URL = import.meta.env.VITE_API_URL;
@@ -10,7 +11,10 @@ export default function VerifyManufacturers() {
   useEffect(() => {
     const loadmanufacturers = async () => {
       try {
-        const res = await axios.get(`${API_URL}/api/admin/manufacturers/pending`,{withCredentials:true} );
+        const res = await axios.get(
+          `${API_URL}/api/admin/manufacturers/pending`,
+          { withCredentials: true }
+        );
         setmanufacturers(res.data.manufacturers || []);
       } catch (err) {
         console.log("Error loading manufacturers", err);
@@ -23,7 +27,11 @@ export default function VerifyManufacturers() {
 
   const verifymanufacturer = async (id) => {
     try {
-      await axios.put(`${API_URL}/api/admin/verify-manufacturer/${id}`,{},{withCredentials:true} );
+      await axios.put(
+        `${API_URL}/api/admin/verify-manufacturer/${id}`,
+        {},
+        { withCredentials: true }
+      );
       alert("manufacturer verified successfully!");
       setmanufacturers(manufacturers.filter((f) => f._id !== id)); // remove from pending list
     } catch (err) {
@@ -56,38 +64,42 @@ export default function VerifyManufacturers() {
 
       <div className="grid gap-6 md:grid-cols-2">
         {manufacturers.map((manufacturer) => (
-          <div
-            key={manufacturer._id}
-            className="bg-white p-6 shadow rounded-xl border space-y-4"
-          >
-            <div>
-              <h2 className="text-xl font-bold text-green-900">{manufacturer.name}</h2>
-              <p>Email: {manufacturer.email}</p>
-              <p>Phone: {manufacturer.phone}</p>
-              <p className="text-sm">Role: {manufacturer.role}</p>
-            </div>
-
-            {/* Documents Preview */}
-            <div className="grid grid-cols-2 gap-3">
-              {manufacturer.documents.map((doc, index) => (
-                <div key={index} className="space-y-1 text-center">
-                  <p className="font-medium text-sm">{doc.documentType}</p>
-                  <img
-                    src={doc.documentUrl}
-                    alt={doc.documentType}
-                    className="w-full h-32 object-cover rounded shadow"
-                  />
-                </div>
-              ))}
-            </div>
-
-            <button
-              onClick={() => verifymanufacturer(manufacturer._id)}
-              className="w-full py-2 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-lg transition"
+          <Link key={manufacturer._id} to={`/admin/Viewmanudocs/${manufacturer._id}`}>
+            <div
+              key={manufacturer._id}
+              className="bg-white p-6 shadow rounded-xl border space-y-4"
             >
-              Verify manufacturer ✔
-            </button>
-          </div>
+              <div>
+                <h2 className="text-xl font-bold text-green-900">
+                  {manufacturer.name}
+                </h2>
+                <p>Email: {manufacturer.email}</p>
+                <p>Phone: {manufacturer.phone}</p>
+                <p className="text-sm">Role: {manufacturer.role}</p>
+              </div>
+
+              {/* Documents Preview */}
+              <div className="grid grid-cols-2 gap-3">
+                {manufacturer.documents.map((doc, index) => (
+                  <div key={index} className="space-y-1 text-center">
+                    <p className="font-medium text-sm">{doc.documentType}</p>
+                    <img
+                      src={doc.documentUrl}
+                      alt={doc.documentType}
+                      className="w-full h-32 object-cover rounded shadow"
+                    />
+                  </div>
+                ))}
+              </div>
+
+              <button
+                onClick={() => verifymanufacturer(manufacturer._id)}
+                className="w-full py-2 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-lg transition"
+              >
+                Verify manufacturer ✔
+              </button>
+            </div>
+          </Link>
         ))}
       </div>
     </div>

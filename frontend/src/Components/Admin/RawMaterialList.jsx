@@ -160,7 +160,7 @@ const RawMaterialList = () => {
             {filteredData.map((item) => (
               <Link
                 key={item.batchCode}
-                to={`/singlerawdetails/${item.batchCode}`}
+                to={`/admin/Singlerawview/${item.batchCode}`}
                 className="group bg-white rounded-xl shadow-md hover:shadow-2xl transition-all duration-300 overflow-hidden flex flex-col border border-gray-100 hover:border-blue-300"
               >
                 {/* Image Container */}

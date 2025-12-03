@@ -8,6 +8,8 @@ import {
   getAllFarmers,
   getAllManufacturers,
   deleteUser,
+  getsingleunverifiedFarmer,
+  getsingleunverifiedmanufacturer,
 } from "../controllers/adminController.js"
 // import { authMiddleware, roleCheck } from "../middlewares/authMiddleware.js";
 
@@ -21,7 +23,9 @@ router.put("/verify-manufacturer/:id",verifymanufacturer);
 router.get("/farmers/pending",pendingfarmers);
 router.get("/manufacturers/pending",pendingmanufacturers);
 router.get("/allfarmers",getAllFarmers);
+router.get("/singlefarmer/:farmerid",getsingleunverifiedFarmer);
 router.get("/allmanufacturers",getAllManufacturers);
+router.get("/singlemanufacturer/:manufacturerid",getsingleunverifiedmanufacturer);
 router.delete("/deleteuser/:id",deleteUser);
 
 

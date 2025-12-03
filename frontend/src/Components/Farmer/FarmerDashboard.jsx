@@ -157,7 +157,7 @@ export default function FarmerDashboard() {
 
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
-              <span className="text-green-700 font-semibold">AD</span>
+              <span className="text-green-700 font-semibold"><Leaf/></span>
             </div>
           </div>
         </header>

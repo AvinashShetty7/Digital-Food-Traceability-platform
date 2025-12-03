@@ -60,7 +60,7 @@ export default function HomePage() {
                 <Leaf className="w-6 h-6 text-white" />
               </div>
               <span className="text-2xl font-bold text-green-800">
-                TrueLeaf
+                TruLeaf
               </span>
             </div>
 

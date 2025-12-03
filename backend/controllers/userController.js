@@ -201,6 +201,8 @@ const resendOTP = async (req, res) => {
 //login controller
 const loginUser = async (req, res) => {
   try {
+    console.log('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx');
+    
     const { email, password } = req.body;
 
     if (!email || !password) {

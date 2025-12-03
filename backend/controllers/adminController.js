@@ -178,9 +178,46 @@ const getAllFarmers = async (req, res) => {
   }
 };
 
+const getsingleunverifiedFarmer = async (req, res) => {
+  try {
+    const farmerid=req.params.farmerid;
+    const farmers = await User.findOne({ _id: farmerid }).sort({ createdAt: -1 });
+    res.json({
+      success: true,
+      farmers,
+    });
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      message: "Error fetching farmers",
+      error: err.message,
+    });
+  }
+};
+
 const getAllManufacturers = async (req, res) => {
   try {
     const manufacturers = await User.find({ role: "manufacturer" }).sort({
+      createdAt: -1,
+    });
+
+    res.json({
+      success: true,
+      manufacturers,
+    });
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      message: "Error fetching manufacturers",
+      error: err.message,
+    });
+  }
+};
+
+const getsingleunverifiedmanufacturer = async (req, res) => {
+  try {
+    const manufacturerid=req.params.manufacturerid;
+    const manufacturers = await User.findOne({ _id:manufacturerid }).sort({
       createdAt: -1,
     });
 
@@ -247,4 +284,6 @@ export {
   getAllFarmers,
   getAllManufacturers,
   deleteUser,
+  getsingleunverifiedFarmer,
+  getsingleunverifiedmanufacturer,
 };

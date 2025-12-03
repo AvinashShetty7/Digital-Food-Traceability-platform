@@ -15,7 +15,7 @@ import FarmerKYCPage from "./Components/Farmer/FarmerKYCPage.jsx";
 import FarmerDashboard from "./Components/Farmer/FarmerDashboard.jsx";
 import AddRawMaterial from "./Components/Farmer/Addrawmaterial.jsx";
 import FarmerRawMaterialList from "./Components/Farmer/FarmerRawMaterialList.jsx";
-import SingleItem from "./Components/Farmer/SIngleItem.jsx";
+import SingleItem from "./Components/Farmer/SingleItem.jsx";
 import ManufacturerKYCPage from "./Components/Manufcaturer/ManufacturerKYCPage.jsx";
 import CreateProduct from "./Components/Manufcaturer/CreateProduct.jsx";
 import Fetchallraws from "./Components/Manufcaturer/Fetchallraws.jsx";
@@ -36,6 +36,9 @@ import Manufacturer from "./Components/Admin/Manufacturer.jsx";
 import Myreservedraws from "./Components/Manufcaturer/Myreservedraws.jsx";
 import Myconsumedraws from "./Components/Manufcaturer/Myconsumedraws.jsx";
 import Mybuyedraws from "./Components/Manufcaturer/buyedraws.jsx";
+import Singlerawview from "./Components/Admin/Singlerawview.jsx";
+import Viewfarmerdocs from "./Components/Admin/Viewfarmerdocs.jsx";
+import Viewmanudocs from "./Components/Admin/Viewmanudocs.jsx";
 
 const router = createBrowserRouter(
   createRoutesFromElements
@@ -81,13 +84,17 @@ const router = createBrowserRouter(
         <Route path="products" element={<Productlist/>}></Route>
         <Route path="farmers" element={<Farmers/>}></Route>
         <Route path="manufacturers" element={<Manufacturer/>}></Route>
+        <Route path="Singlerawview/:batchCode" element={<Singlerawview/>}></Route>
+        <Route path="Viewfarmerdocs/:farmerId" element={<Viewfarmerdocs/>}></Route>
+        <Route path="Viewmanudocs/:manufacturerId" element={<Viewmanudocs/>}></Route>
+
     </Route>
 
   </Route>
   )
 );
 createRoot(document.getElementById("root")).render(
-  <StrictMode>
+  // <StrictMode>
     <RouterProvider router={router} />
-  </StrictMode>
+  // </StrictMode>
 );

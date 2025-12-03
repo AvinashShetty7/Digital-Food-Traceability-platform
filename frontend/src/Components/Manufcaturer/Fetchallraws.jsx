@@ -1,17 +1,22 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
+import { Search } from "lucide-react";
 
 export default function Fetchallraws() {
   const API_URL = import.meta.env.VITE_API_URL;
 
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await axios.get(`${API_URL}/api/rawmaterial/allavailableraws`,{withCredentials:true} );
+        const res = await axios.get(
+          `${API_URL}/api/rawmaterial/allavailableraws`,
+          { withCredentials: true }
+        );
         setItems(res.data.materials || []);
       } catch (error) {
         console.log("Error fetching raw materials", error);
@@ -22,18 +27,33 @@ export default function Fetchallraws() {
     fetchData();
   }, []);
 
+ let filteredData = items.filter((item) =>
+    item.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-50 px-3 sm:px-4 md:px-6 lg:px-8 py-5 sm:py-6 md:py-8 lg:py-10">
       <div className="w-full max-w-7xl mx-auto">
         <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-extrabold text-blue-900 mb-8 sm:mb-10 md:mb-12 text-center tracking-tight">
-          All Raw Materials
+          Available  Raw Materials
         </h1>
+        {/*search bar*/}
+        <div className="md:col-span-2 relative mb-6">
+          <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+          <input
+            type="text"
+            placeholder="Search materials..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="w-full pl-12 pr-4 py-3 rounded-lg border border-gray-200 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white transition-all"
+          />
+        </div>
 
         {loading ? (
           <div className="flex justify-center items-center min-h-96">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
           </div>
-        ) : items.length === 0 ? (
+        ) : filteredData.length === 0 ? (
           <div className="text-center py-16">
             <p className="text-gray-600 text-base sm:text-lg md:text-xl">
               No raw materials found.
@@ -41,7 +61,7 @@ export default function Fetchallraws() {
           </div>
         ) : (
           <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-3 md:gap-4 lg:gap-6">
-            {items.map((item) => (
+            {filteredData.map((item) => (
               <Link
                 to={`/manu/singlerawdetails/${item.batchCode}`}
                 key={item.batchCode}
@@ -59,32 +79,40 @@ export default function Fetchallraws() {
                   <h2 className="text-xs sm:text-sm md:text-base lg:text-lg font-bold text-blue-900 mb-0.5 sm:mb-1 md:mb-1.5 line-clamp-2">
                     {item.name}
                   </h2>
-                  
+
                   <p className="text-xs text-blue-600 mb-1.5 sm:mb-2 md:mb-3 font-semibold truncate">
                     Batch: {item.batchCode}
                   </p>
 
                   <div className="space-y-0.5 sm:space-y-1 text-gray-700 text-xs sm:text-sm md:text-base flex-grow">
                     <p>
-                      <span className="font-semibold text-gray-800">Status:</span>{" "}
-                      <span className={`text-xs sm:text-sm font-medium px-2 py-0.5 rounded-full ${
-                        item.status === "available"
-                          ? "bg-green-100 text-green-700"
-                          : item.status === "sold"
-                          ? "bg-red-100 text-red-700"
-                          : item.status === "reserved"
-                          ? "bg-yellow-100 text-yellow-700"
-                          : "bg-gray-100 text-gray-700"
-                      }`}>
+                      <span className="font-semibold text-gray-800">
+                        Status:
+                      </span>{" "}
+                      <span
+                        className={`text-xs sm:text-sm font-medium px-2 py-0.5 rounded-full ${
+                          item.status === "available"
+                            ? "bg-green-100 text-green-700"
+                            : item.status === "sold"
+                            ? "bg-red-100 text-red-700"
+                            : item.status === "reserved"
+                            ? "bg-yellow-100 text-yellow-700"
+                            : "bg-gray-100 text-gray-700"
+                        }`}
+                      >
                         {item.status}
                       </span>
                     </p>
-                    
+
                     <p>
-                      <span className="font-semibold text-gray-800">Price:</span>{" "}
-                      <span className="text-blue-700 font-bold">₹{item.pricePerUnit}</span>
+                      <span className="font-semibold text-gray-800">
+                        Price:
+                      </span>{" "}
+                      <span className="text-blue-700 font-bold">
+                        ₹{item.pricePerUnit}
+                      </span>
                     </p>
-                    
+
                     <p>
                       <span className="font-semibold text-gray-800">Unit:</span>{" "}
                       {item.unit}

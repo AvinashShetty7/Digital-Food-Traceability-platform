@@ -2,20 +2,15 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 
-export default function SingleItem() {
+export default function Singlerawview() {
   const { batchCode } = useParams();
+  console.log(batchCode);
+  
   const API_URL = import.meta.env.VITE_API_URL;
 
   const [item, setItem] = useState(null);
   const [status, setStatus] = useState("");
   const [loading, setLoading] = useState(true);
-
-  const openDirections = (address) => {
-    const url = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(
-      address
-    )}`;
-    window.open(url, "_blank");
-  };
 
   useEffect(() => {
     const fetchItem = async () => {
@@ -23,6 +18,7 @@ export default function SingleItem() {
         const res = await axios.get(`${API_URL}/api/rawmaterial/singleraw/${batchCode}`, {
           withCredentials: true,
         });
+        
         setItem(res.data.rawMaterial);
         setStatus(res.data.rawMaterial.status);
         setLoading(false);
@@ -272,74 +268,58 @@ export default function SingleItem() {
               </div>
             </div>
 
-            {/* Status Update Card */}
-            <div className="bg-white rounded-xl p-6 shadow-md border border-gray-100">
-              <h3 className="text-lg font-bold text-gray-900 mb-4">
-                ⚙️ Update Status
-              </h3>
-
-              <select
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent transition mb-4 bg-white font-medium text-gray-900 text-sm"
-                value={status}
-                onChange={(e) => setStatus(e.target.value)}
-              >
-                <option value="available">✓ Available</option>
-                <option value="sold">✕ Sold</option>
-                <option value="expired">⚠ Expired</option>
-              </select>
-
-              <button
-                onClick={updateStatus}
-                className="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-bold py-3 rounded-lg shadow-md hover:shadow-lg transition-all duration-200 transform hover:-translate-y-0.5 text-sm sm:text-base"
-              >
-                💾 Save Status
-              </button>
-            </div>
-
-               {/* reserved manufacture info */}
-            {item.requestedBy  && (
+            {/* Supplier Info Card */}
+            {item.farmer && (
               <div className="bg-white rounded-xl p-6 shadow-md border border-gray-100">
                 <h3 className="text-lg font-bold text-gray-900 mb-4">
-                  🚜 Buyer Info
+                  🚜 Supplier Info
                 </h3>
 
                 <div className="space-y-3">
-                  {item.requestedBy.name && (
+                  {item.farmer.name && (
                     <div>
                       <p className="text-xs text-gray-600 uppercase font-bold mb-1">
-                        Buyer Name
+                        Supplier Name
                       </p>
                       <p className="font-semibold text-gray-900 text-sm">
-                        {item.requestedBy.name}
+                        {item.farmer.name}
                       </p>
                     </div>
                   )}
 
-                  {item.requestedBy.phone && (
+                  {item.farmer.phone && (
                     <a
-                      href={`tel:${item.requestedBy.phone}`}
+                      href={`tel:${item.farmer.phone}`}
                       className="flex items-center gap-3 p-3 bg-blue-50 rounded-lg hover:bg-blue-100 transition text-blue-600 font-medium text-sm"
                     >
                       <span>📞</span>
-                      <span>{item.requestedBy.phone}</span>
+                      <span>{item.farmer.phone}</span>
                     </a>
                   )}
 
-                  {item.requestedBy?.email && (
+                  {item.farmer.email && (
                     <a
-                      href={`mailto:${item.requestedBy.email}`}
+                      href={`mailto:${item.farmer.email}`}
                       className="flex items-center gap-3 p-3 bg-blue-50 rounded-lg hover:bg-blue-100 transition text-blue-600 font-medium text-sm"
                     >
                       <span>✉️</span>
-                      <span className="truncate">{item.requestedBy.email}</span>
+                      <span className="truncate">{item.farmer.email}</span>
                     </a>
                   )}
 
-                
+                  {/* Google Maps Button */}
+                  {item.location && (
+                    <button
+                      onClick={()=>openDirections(item.location)}
+                      className="w-full flex items-center justify-center gap-2 bg-red-50 hover:bg-red-100 text-red-600 font-bold py-3 px-4 rounded-lg transition-all duration-200 border border-red-200 text-sm"
+                    >
+                      📍 View on Google Maps
+                    </button>
+                    
+                  )}
                 </div>
               </div>
             )}
-
                  {/* sold manufacture info */}
             {item.manufacturer  && (
               <div className="bg-white rounded-xl p-6 shadow-md border border-gray-100">
