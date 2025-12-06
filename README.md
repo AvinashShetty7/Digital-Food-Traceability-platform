@@ -83,46 +83,44 @@ Each role has different access and functionality.
 - Optimized for Tablets & Desktop
 
 
-📸 Screenshots
 <img width="1831" height="910" alt="image" src="https://github.com/user-attachments/assets/4db13c83-291a-4a8f-9ac3-3e7301fb4757" />
 
 1️⃣ Clone the Repository
 
-git clone https://github.com/your-username/truleaf.git
-cd truleaf
+- git clone https://github.com/your-username/truleaf.git
+- cd truleaf
 
 Backend setup
-cd backend
-npm install
+- cd backend
+- npm install
+- npm start
 
 Backend .env file
-PORT=5000
-MONGO_URI=your_mongodb_url
-JWT_SECRET=your_secret_key
-CLOUDINARY_NAME=your_name
-CLOUDINARY_API_KEY=your_key
-CLOUDINARY_API_SECRET=your_secret
-
-npm start
+- PORT=5000
+- MONGO_URI=your_mongodb_url
+- JWT_SECRET=your_secret_key
+- CLOUDINARY_NAME=your_name
+- CLOUDINARY_API_KEY=your_key
+- CLOUDINARY_API_SECRET=your_secret
 
 Frontend setup
-cd frontend
-npm install
-npm run dev
+- cd frontend
+- npm install
+- npm run dev
 
 
 
 🔐 Security Features
 
-JWT Token Authentication
+- JWT Token Authentication
 
-Role-based Dashboards
+- Role-based Dashboards
 
-Secure QR Data Verification
+- Secure QR Data Verification
 
-Encrypted Password Storage
+- Encrypted Password Storage
 
-Backend Validation & Authorization Middleware
+- Backend Validation & Authorization Middleware
 
 
 For any query contact 
