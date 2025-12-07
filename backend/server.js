@@ -15,7 +15,8 @@ dotenv.config();
 const app = express();
 const allowedOrigins = [
   "http://localhost:5173",
-  "http://192.168.0.190:5173"
+  "http://192.168.0.190:5173",
+  "https://vercel.com/shettyavinash2004-9197s-projects/truleaf-"
 ];
 // Middleware
 app.use(cors({ credentials: true, origin: allowedOrigins }));
