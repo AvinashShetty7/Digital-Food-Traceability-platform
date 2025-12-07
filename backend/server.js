@@ -2,11 +2,11 @@ import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
 import cookieParser from "cookie-parser";
-import connectDB from "./db/db.js"
-import {checkAuth} from "./middleware/authMiddleware.js"
+import connectDB from "./db/db.js";
+import { checkAuth } from "./middleware/authMiddleware.js";
 import userRoutes from "./routes/userRoutes.js";
 import rawMaterialRoutes from "./routes/rawMaterialRoutes.js";
-import imageRoutes from "./routes/imageRoutes.js"
+import imageRoutes from "./routes/imageRoutes.js";
 import productRoutes from "./routes/productRoutes.js";
 // import traceabilityRoutes from "./routes/traceabilityRoutes.js";
 import adminRoutes from "./routes/adminRoutes.js";
@@ -16,7 +16,7 @@ const app = express();
 const allowedOrigins = [
   "http://localhost:5173",
   "http://192.168.0.190:5173",
-  "https://vercel.com/shettyavinash2004-9197s-projects/truleaf-"
+  "https://truleaf.vercel.app",
 ];
 // Middleware
 app.use(cors({ credentials: true, origin: allowedOrigins }));
@@ -27,21 +27,15 @@ app.use(cookieParser());
 connectDB();
 
 // Routes
-app.use("/api/user",userRoutes);
-app.use("/api/rawmaterial",checkAuth,rawMaterialRoutes);
-app.use("/api/farmer", checkAuth,imageRoutes);
-app.use("/api/product",productRoutes);
+app.use("/api/user", userRoutes);
+app.use("/api/rawmaterial", checkAuth, rawMaterialRoutes);
+app.use("/api/farmer", checkAuth, imageRoutes);
+app.use("/api/product", productRoutes);
 // app.use("/api/trace", traceabilityRoutes);
-app.use("/api/admin",checkAuth, adminRoutes);
+app.use("/api/admin", checkAuth, adminRoutes);
 
 // Default
 app.get("/", (req, res) => res.send("Food Supply Chain API Running ✅"));
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
-
-
-
-
-
-
