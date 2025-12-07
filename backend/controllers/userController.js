@@ -108,11 +108,15 @@ const registerUser = async (req, res) => {
 const verifyOtp = async (req, res) => {
   try {
     const { otp, email, formData } = req.body;
+    console.log("Otp is:",otp);
+    console.log("Otp is:",email);
+    console.log("Otp is:",formData);
+    
 
     if (!email || !otp) {
       return res.status(400).json({ message: "Email and OTP are required" });
     }
-
+    
     const tempuser = await Otpmodel.findOne({ email });
     if (!tempuser) {
       return res.status(404).json({ message: "User not found" });
