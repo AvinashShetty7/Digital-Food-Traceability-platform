@@ -4,6 +4,7 @@ import jwt from "jsonwebtoken";
 import nodemailer from "nodemailer";
 import dotenv from "dotenv";
 import Otpmodel from "../models/Otp.model.js";
+import axios from "axios"
 
 dotenv.config();
 
@@ -37,33 +38,53 @@ const registerUser = async (req, res) => {
     await tempUser.save();
 
     console.log("BREVO_EMAIL:", process.env.BREVO_EMAIL);
-    console.log("BREVOSMTP_API_KEY EXISTS:", !!process.env.BREVOSMTP_API_KEY);
+    console.log("BREVOSMTP_API_KEY EXISTS:", process.env.BREVOSMTP_API_KEY);
     console.log("MY_EMAIL:", process.env.MY_EMAIL);
 
-    const transporter = nodemailer.createTransport({
-      host: "smtp-relay.brevo.com",
-      port: 587,
-      secure: false,
-      auth: {
-        user: process.env.BREVO_EMAIL,
-        pass: process.env.BREVOSMTP_API_KEY,
-      },
-      logger: true, // ✅ ADD THIS
-      debug: true, // ✅ ADD THIS
-    });
+    // const transporter = nodemailer.createTransport({
+    //   host: "smtp-relay.brevo.com",
+    //   port: 587,
+    //   secure: false,
+    //   auth: {
+    //     user: process.env.BREVO_EMAIL,
+    //     pass: process.env.BREVOSMTP_API_KEY,
+    //   },
+    //   logger: true, // ✅ ADD THIS
+    //   debug: true, // ✅ ADD THIS
+    // });
 
-    const mailOptions = {
-      from: process.env.MY_EMAIL,
-      to: email,
-      subject: "Your Verification OTP",
-      text: `Your OTP is ${otp}. It will expire in 5 minutes.`,
-    };
-    try {
-      await transporter.sendMail(mailOptions);
-      console.log("otp sent");
-    } catch (mailError) {
-      console.error("❌ MAIL ERROR:", mailError); // ✅ VERY IMPORTANT
-    }
+    // const mailOptions = {
+    //   from: process.env.MY_EMAIL,
+    //   to: email,
+    //   subject: "Your Verification OTP",
+    //   text: `Your OTP is ${otp}. It will expire in 5 minutes.`,
+    // };
+    // try {
+    //   await transporter.sendMail(mailOptions);
+    //   console.log("otp sent");
+    // } catch (mailError) {
+    //   console.error("❌ MAIL ERROR:", mailError); // ✅ VERY IMPORTANT
+    // }
+
+
+    await axios.post(
+      "https://api.brevo.com/v3/smtp/email",
+      {
+        to: [{ email }],
+        sender: {
+          name: "TruLeaf Support",
+          email: process.env.MY_EMAIL,
+        },
+        subject: "Your OTP Verification",
+        htmlContent: `<p>Your OTP is <b>${otp}</b></p>`,
+      },
+      {
+        headers: {
+          "api-key": process.env.BREVO_API_KEY, // ✅ API KEY (not SMTP key)
+          "Content-Type": "application/json",
+        },
+      }
+    );
 
     res.status(201).json({
       success: true,
