@@ -259,8 +259,8 @@ const logoutUser = async (req, res) => {
     // 1️⃣ Clear the authentication cookie (tokenid)
     res.clearCookie("tokenid", {
       httpOnly: true,
-      secure: false,
-      sameSite: "Lax",
+      secure: true,
+      sameSite: "None",
     });
 
     // 2️⃣ Respond success
