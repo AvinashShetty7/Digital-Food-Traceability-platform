@@ -36,6 +36,10 @@ const registerUser = async (req, res) => {
     tempUser.otpExpiry = Date.now() + 5 * 60 * 1000; // expires in 5 minutes
     await tempUser.save();
 
+    console.log("BREVO_EMAIL:", process.env.BREVO_EMAIL);
+    console.log("BREVOSMTP_API_KEY EXISTS:", !!process.env.BREVOSMTP_API_KEY);
+    console.log("MY_EMAIL:", process.env.MY_EMAIL);
+
     const transporter = nodemailer.createTransport({
       host: "smtp-relay.brevo.com",
       port: 587,
