@@ -13,7 +13,7 @@ import OtpVerify from "./Components/Otpverify.jsx";
 import LoginPage from "./Components/LoginPage.jsx";
 import FarmerKYCPage from "./Components/Farmer/FarmerKYCPage.jsx";
 import FarmerDashboard from "./Components/Farmer/FarmerDashboard.jsx";
-import AddRawMaterial from "./Components/Farmer/Addrawmaterial.jsx";
+import AddRawMaterial from "./Components/Farmer/AddRawMaterial.jsx";
 import FarmerRawMaterialList from "./Components/Farmer/FarmerRawMaterialList.jsx";
 import SingleItem from "./Components/Farmer/SingleItem.jsx";
 import ManufacturerKYCPage from "./Components/Manufcaturer/ManufacturerKYCPage.jsx";
@@ -41,61 +41,81 @@ import Viewfarmerdocs from "./Components/Admin/Viewfarmerdocs.jsx";
 import Viewmanudocs from "./Components/Admin/Viewmanudocs.jsx";
 
 const router = createBrowserRouter(
-  createRoutesFromElements
-  (
-  <Route path="/" element={<App />}>
-    <Route path="" element={<HomePage/>}></Route>
-    <Route path="HomePage" element={<HomePage/>}></Route>
-    <Route path="register" element={<Register/>}></Route>
-    <Route path="otp" element={<OtpVerify/>}></Route>
-    <Route path="login" element={<LoginPage/>}></Route>
-    <Route path="traceproduct/:id" element={<TraceProduct/>}></Route>
-    <Route path="FarmerKYCPage" element={<FarmerKYCPage/>}></Route>
-    <Route path="ManufacturerKYCPage" element={<ManufacturerKYCPage/>}></Route>
+  createRoutesFromElements(
+    <Route path="/" element={<App />}>
+      <Route path="" element={<HomePage />}></Route>
+      <Route path="HomePage" element={<HomePage />}></Route>
+      <Route path="register" element={<Register />}></Route>
+      <Route path="otp" element={<OtpVerify />}></Route>
+      <Route path="login" element={<LoginPage />}></Route>
+      <Route path="traceproduct/:id" element={<TraceProduct />}></Route>
+      <Route path="FarmerKYCPage" element={<FarmerKYCPage />}></Route>
+      <Route
+        path="ManufacturerKYCPage"
+        element={<ManufacturerKYCPage />}
+      ></Route>
 
-    <Route path="farmer" element={<FarmerDashboard/>}>
-        <Route path="" element={<MarketPricePage/>}></Route>
-        <Route path="marketprice" element={<MarketPricePage/>}></Route>
-        <Route path="AddRawMaterial" element={<AddRawMaterial/>}></Route>
-        <Route path="FarmerRawMaterialList" element={<FarmerRawMaterialList/>}></Route>
-        <Route path="SingleItem/:batchCode" element={<SingleItem/>}></Route>
-        <Route path="uploadeddocs/:farmerId" element={<Viewfarmerdocs/>}></Route>
+      <Route path="farmer" element={<FarmerDashboard />}>
+        <Route path="" element={<MarketPricePage />}></Route>
+        <Route path="marketprice" element={<MarketPricePage />}></Route>
+        <Route path="AddRawMaterial" element={<AddRawMaterial />}></Route>
+        <Route
+          path="FarmerRawMaterialList"
+          element={<FarmerRawMaterialList />}
+        ></Route>
+        <Route path="SingleItem/:batchCode" element={<SingleItem />}></Route>
+        <Route
+          path="uploadeddocs/:farmerId"
+          element={<Viewfarmerdocs />}
+        ></Route>
+      </Route>
+
+      <Route path="manu" element={<DashboardLayout />}>
+        <Route path="" element={<MarketPricePage />}></Route>
+        <Route path="marketprice" element={<MarketPricePage />}></Route>
+        <Route
+          path="Singlerawdetails/:batchCode"
+          element={<Singlerawdetails />}
+        ></Route>
+        <Route path="CreateProduct" element={<CreateProduct />}></Route>
+        <Route path="Fetchallraws" element={<Fetchallraws />}></Route>
+        <Route path="MyProducts" element={<MyProducts />}></Route>
+        <Route path="Myreservedraws" element={<Myreservedraws />}></Route>
+        <Route path="Myconsumedraws" element={<Myconsumedraws />}></Route>
+        <Route path="Mybuyedraws" element={<Mybuyedraws />}></Route>
+      </Route>
+
+      <Route path="Admin" element={<AdminDashboardLayout />}>
+        <Route path="" element={<AdminStats />}></Route>
+        <Route path="marketprice" element={<MarketPricePage />}></Route>
+        <Route path="VerifyFarmers" element={<VerifyFarmers />}></Route>
+        <Route
+          path="VerifyManufacturers"
+          element={<VerifyManufacturers />}
+        ></Route>
+        <Route path="stats" element={<AdminStats />}></Route>
+        <Route path="rawmaterials" element={<RawMaterialList />}></Route>
+        <Route path="products" element={<Productlist />}></Route>
+        <Route path="farmers" element={<Farmers />}></Route>
+        <Route path="manufacturers" element={<Manufacturer />}></Route>
+        <Route
+          path="Singlerawview/:batchCode"
+          element={<Singlerawview />}
+        ></Route>
+        <Route
+          path="Viewfarmerdocs/:farmerId"
+          element={<Viewfarmerdocs />}
+        ></Route>
+        <Route
+          path="Viewmanudocs/:manufacturerId"
+          element={<Viewmanudocs />}
+        ></Route>
+      </Route>
     </Route>
-
-    <Route path="manu" element={<DashboardLayout/>}>
-        <Route path="" element={<MarketPricePage/>}></Route>
-        <Route path="marketprice" element={<MarketPricePage/>}></Route>
-        <Route path="Singlerawdetails/:batchCode" element={<Singlerawdetails/>}></Route>
-        <Route path="CreateProduct" element={<CreateProduct/>}></Route>
-        <Route path="Fetchallraws" element={<Fetchallraws/>}></Route>
-        <Route path="MyProducts" element={<MyProducts/>}></Route>
-        <Route path="Myreservedraws" element={<Myreservedraws/>}></Route>
-        <Route path="Myconsumedraws" element={<Myconsumedraws/>}></Route>
-        <Route path="Mybuyedraws" element={<Mybuyedraws/>}></Route>
-
-    </Route>
-
-    <Route path="Admin" element={<AdminDashboardLayout/>}>
-        <Route path="" element={<AdminStats/>}></Route>
-        <Route path="marketprice" element={<MarketPricePage/>}></Route>
-        <Route path="VerifyFarmers" element={<VerifyFarmers/>}></Route>
-        <Route path="VerifyManufacturers" element={<VerifyManufacturers/>}></Route>
-        <Route path="stats" element={<AdminStats/>}></Route>
-        <Route path="rawmaterials" element={<RawMaterialList/>}></Route>
-        <Route path="products" element={<Productlist/>}></Route>
-        <Route path="farmers" element={<Farmers/>}></Route>
-        <Route path="manufacturers" element={<Manufacturer/>}></Route>
-        <Route path="Singlerawview/:batchCode" element={<Singlerawview/>}></Route>
-        <Route path="Viewfarmerdocs/:farmerId" element={<Viewfarmerdocs/>}></Route>
-        <Route path="Viewmanudocs/:manufacturerId" element={<Viewmanudocs/>}></Route>
-
-    </Route>
-
-  </Route>
   )
 );
 createRoot(document.getElementById("root")).render(
   // <StrictMode>
-    <RouterProvider router={router} />
+  <RouterProvider router={router} />
   // </StrictMode>
 );
