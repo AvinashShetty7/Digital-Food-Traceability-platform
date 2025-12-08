@@ -7,7 +7,7 @@ const storage = new CloudinaryStorage({
   params: {
     folder: "farmer_documents",
     resource_type: "auto",
-    allowed_formats: ["jpg", "jpeg", "png", "pdf"],
+    allowed_formats: ["jpg", "jpeg", "png", "pdf","WEBP"],
   },
 });
 
