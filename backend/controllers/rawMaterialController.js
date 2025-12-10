@@ -1,68 +1,6 @@
 import RawMaterial from "../models/RawMaterial.model.js";
 import User from "../models/User.model.js";
 
-// const addRawMaterial = async (req, res) => {
-
-//   try {
-//     const {
-//       name,
-//       quantity,
-//       unit,
-//       location,
-//       harvestDate,
-//       expiryDate,
-//       pricePerUnit,
-//       qualityGrade,
-//     } = req.body;
-
-//     if (!name || !quantity || !unit || !pricePerUnit) {
-//       return res.status(400).json({
-//         message:
-//           "All required fields (name, quantity, unit, price, image) must be provided.",
-//       });
-//     }
-
-//     const farmerId = req.user?._id;
-//     const farmer = await User.findById(farmerId);
-
-//     if (!farmer) {
-//       return res.status(404).json({ message: "Farmer not found." });
-//     }
-
-//     if (farmer.role !== "farmer") {
-//       return res
-//         .status(403)
-//         .json({ message: "Only farmers can add raw materials." });
-//     }
-
-//     const newMaterial = new RawMaterial({
-//       name,
-//       quantity,
-//       unit,
-//       location,
-//       harvestDate,
-//       expiryDate,
-//       pricePerUnit,
-//       qualityGrade: qualityGrade || "A",
-//       //   farmer: farmerId,
-//     });
-
-//     await newMaterial.save();
-
-//     res.status(201).json({
-//       success: true,
-//       message: "✅ Raw material added successfully!",
-//       rawMaterial: newMaterial,
-//     });
-//   } catch (error) {
-//     console.error("❌ Erro raw material:", error);
-//     res.status(500).json({
-//       success: false,
-//       message: "Server error while adding raw material",
-//       error: error.message,
-//     });
-//   }
-// };
 
 const getRawMaterialsByFarmer = async (req, res) => {
   try {
@@ -425,7 +363,6 @@ const markAsConsumed = async (req, res) => {
 };
 
 export {
-  // addRawMaterial,
   getRawMaterialsByFarmer,
   getAllRawMaterials,
   getSingleRawMaterial,

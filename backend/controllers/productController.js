@@ -6,11 +6,6 @@ import dotenv from "dotenv";
 dotenv.config();
 
 
-/**
- * ✅ Create Product Controller
- * Route: POST /api/product/create
- * Access: Manufacturer only
- */
 import QRCode from "qrcode";
 
 const createProduct = async (req, res) => {
@@ -30,7 +25,7 @@ const createProduct = async (req, res) => {
 
     
 
-    // 1️⃣ Basic validation
+    // 1Basic validation
     if (!name || !rawMaterials || !quantity || !req.file) {
       return res.status(400).json({
         success: false,
@@ -52,7 +47,7 @@ const createProduct = async (req, res) => {
       });
     }
 
-    // 2️⃣ Validate manufacturer (from token)
+    //  Validate manufacturer (from token)
     const manufacturer = await User.findById(req.user._id).select(
       "name email phone role"
     );
@@ -64,7 +59,7 @@ const createProduct = async (req, res) => {
       });
     }
 
-    // 3️⃣ Fetch & validate raw materials
+    // Fetch & validate raw materials
     const validMaterials = await RawMaterial.find({
       _id: { $in: parsedMaterials },
       manufacturer:req.user._id, // must belong to manufacturer
@@ -82,7 +77,7 @@ const createProduct = async (req, res) => {
       });
     }
 
-    // 4️⃣ Build consumedRawDetails snapshot
+    // Build consumedRawDetails snapshot
     const consumedRawDetails = validMaterials.map((rm) => ({
       rawMaterialId: rm._id,
       batchCode: rm.batchCode,
@@ -99,7 +94,7 @@ const createProduct = async (req, res) => {
     
     
     
-    // 5️⃣ Create product
+    // 5Create product
     const newProduct = new Product({
       name,
       description,
@@ -121,35 +116,13 @@ const createProduct = async (req, res) => {
     
     await newProduct.save();
 
-    // 6️⃣ Create QR payload
+    // Create QR payload
     const qrPayload = {
-      // productId: newProduct._id,
-      // productCode: newProduct.productCode,
       traceUrl: `${process.env.FRONTEND_URL}/traceproduct/${newProduct._id}`,
-
-      // productDetails: {
-      //   name: newProduct.name,
-      //   description: newProduct.description,
-      //   category: newProduct.category,
-      //   batchNumber: newProduct.batchNumber,
-      //   manufacturingLocation: newProduct.manufacturingLocation,
-      //   quantity: newProduct.quantity,
-      //   unit: newProduct.unit,
-      //   expiryDate: newProduct.expiryDate,
-      //   imageUrl: newProduct.imageUrl,
-      // },
-
-      // manufacturerDetails: {
-      //   name: manufacturer.name,
-      //   email: manufacturer.email,
-      //   phone: manufacturer.phone,
-      // },
-
-      // rawMaterialsUsed: consumedRawDetails,
     };
 
-    // 7️⃣ Generate QR Image (Base64)
-    // const qrImage = await QRCode.toDataURL(JSON.stringify(qrPayload));
+    // Generate QR Image (Base64)
+  
     const qrImage = await QRCode.toDataURL(qrPayload.traceUrl);
 
 
@@ -159,7 +132,7 @@ const createProduct = async (req, res) => {
 
     await newProduct.save();
 
-    // 8️⃣ Mark raw materials as consumed
+    //  Mark raw materials as consumed
     await RawMaterial.updateMany(
       { _id: { $in: parsedMaterials } },
       { $set: { status: "consumed" } }
@@ -180,11 +153,7 @@ const createProduct = async (req, res) => {
   }
 };
 
-/**
- * ✅ Get All Products Created by Logged-in Manufacturer
- * Route: GET /api/product/myproducts
- * Access: Manufacturer only
- */
+
 const getMyProducts = async (req, res) => {
   try {
     const id = req.user._id;
@@ -199,11 +168,6 @@ const getMyProducts = async (req, res) => {
 };
 
 
-/**
- * ✅ Get All Products
- * Route: GET /api/product/all
- * Access: Admin and Manufacturer
- */
 const getAllProducts = async (req, res) => {
   
   try {
@@ -248,12 +212,6 @@ const getAllProducts = async (req, res) => {
   }
 };
 
-/**
- * ✅ Get Single Product (with full trace details)
- * Route: GET /api/product/:id
- * Access: Authenticated users (admin or manufacturer)
- */
-
 
 const getSingleProduct = async (req, res) => {
   try {
@@ -289,23 +247,17 @@ const getSingleProduct = async (req, res) => {
   }
 };
 
-
-/**
- * ✅ Update Product Status (Manufacturer)
- * Route: PUT /api/product/update-status/:id
- * Access: Manufacturer only
- */
 const updateProductStatus = async (req, res) => {
   try {
     const { id } = req.params;
     const { newStatus } = req.body;
 
-    // 1️⃣ Validate product ID
+    // Validate product ID
     if (!mongoose.isValidObjectId(id)) {
       return res.status(400).json({ message: "Invalid product ID format." });
     }
 
-    // 2️⃣ Validate new status
+    // Validate new status
     const validStatuses = [
       "created",
       "in_production",
@@ -319,20 +271,20 @@ const updateProductStatus = async (req, res) => {
       });
     }
 
-    // 3️⃣ Find product
+    // ind product
     const product = await Product.findById(id);
     if (!product) {
       return res.status(404).json({ message: "Product not found." });
     }
 
-    // 4️⃣ Ensure the manufacturer owns this product
+    // Ensure the manufacturer owns this product
     if (product.manufacturer.toString() !== req.user._id.toString()) {
       return res.status(403).json({
         message: "You are not authorized to update this product.",
       });
     }
 
-    // 5️⃣ Prevent invalid backward transitions (optional)
+    // Prevent invalid backward transitions (optional)
     const statusOrder = {
       created: 1,
       in_production: 2,
@@ -347,7 +299,7 @@ const updateProductStatus = async (req, res) => {
       });
     }
 
-    // 6️⃣ Update status and add trace history
+    // date status and add trace history
     product.status = newStatus;
     product.traceHistory.push({
       status: newStatus,
@@ -357,7 +309,7 @@ const updateProductStatus = async (req, res) => {
 
     await product.save();
 
-    // 7️⃣ Return success
+    //  Return success
     res.status(200).json({
       success: true,
       message: `✅ Product status updated to "${newStatus}".`,
@@ -373,27 +325,23 @@ const updateProductStatus = async (req, res) => {
   }
 };
 
-/**
- * ✅ Delete Product Controller
- * Route: DELETE /api/product/delete/:id
- * Access: Manufacturer (own products) or Admin
- */
+
 const deleteProduct = async (req, res) => {
   try {
     const { id } = req.params;
 
-    // 1️⃣ Validate product ID
+    // Validate product ID
     if (!mongoose.isValidObjectId(id)) {
       return res.status(400).json({ message: "Invalid product ID format." });
     }
 
-    // 2️⃣ Find product
+    //Find product
     const product = await Product.findById(id);
     if (!product) {
       return res.status(404).json({ message: "Product not found." });
     }
 
-    // 3️⃣ Check authorization
+    // heck authorization
     if (
       req.user.role === "manufacturer" &&
       product.manufacturer.toString() !== req.user._id.toString()
@@ -403,7 +351,7 @@ const deleteProduct = async (req, res) => {
         .json({ message: "You are not authorized to delete this product." });
     }
 
-    // 4️⃣ Optional cleanup — set related raw materials back to "available"
+    // ptional cleanup — set related raw materials back to "available"
     if (product.rawMaterials && product.rawMaterials.length > 0) {
       await RawMaterial.updateMany(
         { _id: { $in: product.rawMaterials } },
@@ -411,7 +359,7 @@ const deleteProduct = async (req, res) => {
       );
     }
 
-    // 5️⃣ Delete the product
+    // Delete the product
     await Product.findByIdAndDelete(id);
 
     res.status(200).json({
