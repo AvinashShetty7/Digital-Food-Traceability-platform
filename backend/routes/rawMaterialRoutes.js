@@ -37,7 +37,6 @@ router.get("/buyedraws",getmybuyedraws);
 router.put("/update/:batchCode", updateStatus);
 router.delete("/delete/:id",deleteRawMaterial);
 
-// // Mark as consumed (by manufacturer)
 router.put("/mark-consumed/:id",  markAsConsumed);
 
 export default router;
